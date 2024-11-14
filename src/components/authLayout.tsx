@@ -38,32 +38,51 @@ const AuthLayout = ({ children, imageSize, formSize }: AuthLayoutProps) => {
       <Box
         sx={{
           position: "absolute",
-          width: "100%",
+          width: { xs: "92%", md: "100%" },
           bottom: "0",
+          left: "0",
+          right: "0",
+          margin: "auto",
           borderTop: "solid 1px #D9D9D9",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            height: "50px",
-            width: "100%",
-          }}
-        >
-          <Typography
-            component="p"
-            sx={{ color: "#fff", opacity: ".6", marginLeft: "100px" }}
-          >
-            Copyright © ITM Development | Contact Book | 2022
-          </Typography>
-          <Typography
-            component="p"
-            sx={{ color: "#fff", opacity: ".6", marginLeft: "300px" }}
-          >
-            Privacy Policy - Terms & Conditions
-          </Typography>
-        </Box>
+        <Grid container sx={{ width: "100%" }}>
+          <Grid size={{ xs: 12, md: imageSize as GridSize }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-around",
+                alignItems: "center",
+                height: "50px",
+              }}
+            >
+              <Typography
+                component="p"
+                sx={{
+                  color: { xs: "#000", md: "#fff" },
+                  opacity: ".6",
+                  fontSize: { xs: "13px", md: "16px" },
+                }}
+              >
+                Copyright © ITM Development | Contact Book | 2022
+              </Typography>
+              <Typography
+                component="p"
+                sx={{
+                  color: { xs: "#000", md: "#fff" },
+                  opacity: ".6",
+                  display: {
+                    xs: "none",
+                    md: imageSize != 4.5 ? "block" : "none",
+                  },
+                }}
+              >
+                Privacy Policy - Terms & Conditions
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid size={{ xs: 0, md: formSize as GridSize }}></Grid>
+        </Grid>
       </Box>
     </>
   );
