@@ -13,13 +13,27 @@ const Layout = ({ children, page }: LayoutPros) => {
   return (
     <>
       <Box
-        sx={{ width: "100%", minHeight: "100vh", backgroundColor: "#F5F5F5" }}
+        sx={{
+          width: "100%",
+          minHeight: "calc(100vh - 61px)",
+          backgroundColor: "#F5F5F5",
+          position: "relative",
+        }}
       >
         {page.startsWith("/auth") ? <></> : <Navbar />}
         {!page.startsWith("/auth") ? (
-          <Container maxWidth="xl" sx={{ mt: "50px" }}>
-            {children}
-          </Container>
+          <>
+            <Container
+              maxWidth="xl"
+              sx={{
+                pt: "50px",
+                position: "relative",
+                pb: "50px",
+              }}
+            >
+              {children}
+            </Container>
+          </>
         ) : (
           <Box>{children}</Box>
         )}

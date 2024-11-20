@@ -5,18 +5,66 @@ import {
   FormControlLabel,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import AuthLayout from "@/components/authLayout";
 import Grid from "@mui/material/Grid2";
 import Input from "@/components/Input";
 import PasswordInput from "@/components/passwordInput";
 import CountrySelect from "@/components/countrySelect";
 import Link from "next/link";
+import { RegisterData } from "@/models/register";
+
 const Register = () => {
+  const [formData, setFormData] = useState<RegisterData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    companyName: "",
+    vatNumber: "",
+    streetOne: "",
+    streetTwo: "",
+    city: "",
+    state: "",
+    zip: "",
+    country: "",
+  });
+
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSumit = () => {
+    setIsSubmitted(true);
+    console.log("Form Data:", formData);
+  };
+
+  const girdSize = { xs: 12, md: 5.5 };
+
   return (
     <>
       <AuthLayout imageSize={4.5} formSize={7.5}>
-        <Box component="form" sx={{ width: "100%", maxWidth: "806px" }}>
+        <Box
+          component="form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSumit();
+          }}
+          sx={{
+            width: "100%",
+            maxWidth: "806px",
+            pb: "30px",
+          }}
+        >
           <Typography
             component="h2"
             sx={{
@@ -27,12 +75,14 @@ const Register = () => {
               },
               fontWeight: "700",
               color: "#212529",
+              textAlign: { xs: "center", md: "left" },
             }}
           >
             Create Account
           </Typography>
+
           {/* Account details Start */}
-          <Box sx={{ marginBottom: "10px" }}>
+          <Box sx={{ marginBottom: "20px" }}>
             <Typography
               component="h2"
               sx={{
@@ -47,32 +97,39 @@ const Register = () => {
               Account details
             </Typography>
             <Grid container justifyContent={"space-between"} gap={3.5}>
-              <Grid size={5.5}>
+              <Grid size={girdSize}>
                 <Input
-                  name="first-name"
+                  name="firstName"
                   label="First Name"
-                  onChange={() => {}}
-                  fullWidth={true}
-                ></Input>
+                  onChange={handleChange}
+                  value={formData.firstName}
+                  fullWidth
+                />
               </Grid>
-              <Grid size={5.5}>
+              <Grid size={girdSize}>
                 <Input
-                  name="last-name"
+                  name="lastName"
                   label="Last Name"
-                  onChange={() => {}}
-                  fullWidth={true}
-                ></Input>
+                  onChange={handleChange}
+                  value={formData.lastName}
+                  fullWidth
+                />
               </Grid>
-              <Grid size={5.5}>
+              <Grid size={girdSize}>
                 <Input
                   name="email"
                   label="Email"
-                  onChange={() => {}}
-                  fullWidth={true}
-                ></Input>
+                  onChange={handleChange}
+                  value={formData.email}
+                  fullWidth
+                />
               </Grid>
-              <Grid size={5.5}>
-                <PasswordInput onChange={() => {}}></PasswordInput>
+              <Grid size={girdSize}>
+                <PasswordInput
+                  label="Password"
+                  onChange={handleChange}
+                  value={formData.password}
+                />
               </Grid>
             </Grid>
           </Box>
@@ -82,7 +139,7 @@ const Register = () => {
           <Box>
             <Typography
               component="h2"
-              marginTop="30px"
+              marginTop="50px"
               marginBottom="20px"
               sx={{
                 opacity: ".4",
@@ -95,75 +152,88 @@ const Register = () => {
               Billing details
             </Typography>
             <Grid container justifyContent={"space-between"} gap={3.5}>
-              <Grid size={5.5}>
+              <Grid size={girdSize}>
                 <Input
-                  name="company-name"
+                  name="companyName"
                   label="Company Name"
-                  onChange={() => {}}
-                  fullWidth={true}
-                ></Input>
+                  onChange={handleChange}
+                  value={formData.companyName}
+                  fullWidth
+                />
               </Grid>
-              <Grid size={5.5}>
+              <Grid size={girdSize}>
                 <Input
-                  name="vat-number"
+                  name="vatNumber"
                   label="VAT Number"
-                  onChange={() => {}}
-                  fullWidth={true}
-                ></Input>
+                  onChange={handleChange}
+                  value={formData.vatNumber}
+                  fullWidth
+                />
               </Grid>
-              <Grid size={5.5}>
+              <Grid size={girdSize}>
                 <Input
-                  name="street"
+                  name="streetOne"
                   label="Street"
-                  onChange={() => {}}
-                  fullWidth={true}
-                ></Input>
+                  onChange={handleChange}
+                  value={formData.streetOne}
+                  fullWidth
+                />
               </Grid>
-              <Grid size={5.5}>
+              <Grid size={girdSize}>
                 <Input
-                  name="street2"
+                  name="streetTwo"
                   label="Street 2 (Optional)"
-                  onChange={() => {}}
-                  fullWidth={true}
-                ></Input>
+                  onChange={handleChange}
+                  value={formData.streetTwo}
+                  fullWidth
+                />
               </Grid>
-              <Grid size={5.5}>
+              <Grid size={girdSize}>
                 <Input
                   name="city"
                   label="City"
-                  onChange={() => {}}
-                  fullWidth={true}
-                ></Input>
+                  onChange={handleChange}
+                  value={formData.city}
+                  fullWidth
+                />
               </Grid>
-              <Grid size={5.5}>
+              <Grid size={girdSize}>
                 <Input
                   name="state"
                   label="State"
-                  onChange={() => {}}
-                  fullWidth={true}
-                ></Input>
+                  onChange={handleChange}
+                  value={formData.state}
+                  fullWidth
+                />
               </Grid>
-              <Grid size={5.5}>
+              <Grid size={girdSize}>
                 <Input
                   name="zip"
                   label="Zip"
-                  onChange={() => {}}
-                  fullWidth={true}
-                ></Input>
+                  onChange={handleChange}
+                  value={formData.zip}
+                  fullWidth
+                />
               </Grid>
-              <Grid size={5.5}>
-                <CountrySelect></CountrySelect>
+              <Grid size={girdSize}>
+                <CountrySelect
+                  value={formData.country}
+                  onChange={(value) =>
+                    setFormData({ ...formData, country: value })
+                  }
+                />
               </Grid>
             </Grid>
             {/* Billing details End*/}
 
             <FormControlLabel
-              control={<Checkbox />}
+              control={<Checkbox sx={{ color: "#B7B7B7" }} />}
               label="I agree to the website terms and conditions"
               sx={{
                 marginTop: "20px",
                 "& .MuiFormControlLabel-label": {
                   fontSize: "16px",
+                  color: "#212529",
                 },
               }}
             />
@@ -171,20 +241,28 @@ const Register = () => {
           <Button
             sx={{
               fontSize: "20px",
-              textTransform: "capitalize",
+              textTransform: "none",
               marginBottom: "30px",
-              marginTop: "30px",
-              fontWeight: "400",
+              marginTop: "40px",
+              borderRadius: "5px",
+              fontWeight: "300",
+              background: "#4E73DF",
             }}
             variant="contained"
             disableElevation
             size="small"
             fullWidth
+            type="submit"
           >
             Register
           </Button>
           <Box sx={{ textAlign: "center" }}>
-            <Link href="/auth/signin">Sign in instead</Link>
+            <Link
+              style={{ color: "#4E73DF", fontSize: "20px" }}
+              href="/auth/signin"
+            >
+              Sign in instead
+            </Link>
           </Box>
         </Box>
       </AuthLayout>

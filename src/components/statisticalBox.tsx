@@ -19,7 +19,7 @@ const StatisticalBox = ({
   Icon,
 }: StatisticalBoxProps) => {
   return (
-    <Grid size={{ xs: 12, md: 5 }}>
+    <Grid size={{ xs: 12, md: 6 }}>
       <Box
         sx={{
           background: color,
@@ -60,6 +60,7 @@ const StatisticalBox = ({
                   }}
                 ></ArrowUpwardIcon>
                 <Typography
+                  noWrap
                   sx={{
                     fontSize: "16px",
                     color: "#fff",

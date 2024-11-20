@@ -3,12 +3,21 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-export default function CountrySelect() {
+interface CountrySelectProps {
+  onChange: (value: string) => void;
+  value: string;
+}
+
+export default function CountrySelect({ value, onChange }: CountrySelectProps) {
   return (
     <Autocomplete
       id="country-select-demo"
+      onChange={(event, newValue) => {
+        onChange(newValue ? newValue.label : ""); // Pass the label of the selected country
+      }}
       sx={{ width: "100%" }}
       options={countries}
+      value={countries.find((country) => country.label === value) || null}
       autoHighlight
       fullWidth
       getOptionLabel={(option) => option.label}
@@ -36,8 +45,15 @@ export default function CountrySelect() {
         <TextField
           {...params}
           size="small"
-          label="Select your country"
           fullWidth
+          sx={{
+            "& .MuiInputBase-root": {
+              borderRadius: "5px",
+              fontSize: "20px",
+              fontWeight: "400",
+            },
+          }}
+          placeholder="Select your country"
           slotProps={{
             htmlInput: {
               ...params.inputProps,

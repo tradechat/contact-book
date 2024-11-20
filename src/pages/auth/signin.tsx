@@ -15,7 +15,10 @@ const SignIn = () => {
   return (
     <>
       <AuthLayout imageSize={7.3} formSize={4.7}>
-        <Box component="form" sx={{ width: "100%", maxWidth: "370px" }}>
+        <Box
+          component="form"
+          sx={{ width: "100%", maxWidth: "370px", pb: "30px" }}
+        >
           <Typography
             component="h2"
             sx={{
@@ -44,22 +47,24 @@ const SignIn = () => {
             onChange={() => {}}
             value=""
           ></Input>
-          <Box sx={{ height: "25px" }}></Box>
+          <Box sx={{ height: "35px" }}></Box>
           <PasswordInput onChange={() => {}}></PasswordInput>
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              margin: "20px 0",
+              mt: "20px",
+              mb: "40px",
             }}
           >
             <FormControlLabel
-              control={<Checkbox />}
+              control={<Checkbox sx={{ color: "#B7B7B7" }} />}
               label="Remember me"
               sx={{
                 "& .MuiFormControlLabel-label": {
                   fontSize: "16px",
+                  color: "#212529",
                 },
               }}
             />
@@ -78,16 +83,18 @@ const SignIn = () => {
           <Button
             sx={{
               fontSize: "20px",
-              textTransform: "capitalize",
+              textTransform: "none",
               marginBottom: "30px",
-              fontWeight: "500",
+              borderRadius: "5px",
+              fontWeight: "300",
+              background: "#4E73DF",
             }}
             variant="contained"
             disableElevation
             size="small"
             fullWidth
           >
-            Sigin In
+            Sigin in
           </Button>
           <Box
             sx={{
@@ -108,6 +115,7 @@ const SignIn = () => {
               style={{
                 color: "#212529",
                 fontSize: "15px",
+                textAlign: "center",
                 textDecorationColor: "#212529",
               }}
             >
@@ -131,7 +139,9 @@ const SignIn = () => {
                   width: "147px",
                   textTransform: "capitalize",
                   fontSize: "20px",
-                  fontWeight: "400",
+                  fontWeight: "300",
+                  borderColor: "#4E73DF",
+                  color: "#4E73DF",
                 }}
                 size="small"
               >

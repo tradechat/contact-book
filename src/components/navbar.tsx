@@ -22,21 +22,23 @@ import React from "react";
 import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import { useRouter } from "next/router";
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [userProfileOpen, setOpen] = useState(false);
-
+  const router = useRouter();
   const handleUserProfileClick = () => {
     setOpen(!userProfileOpen);
   };
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
+
   const pages = [
     { name: "Home", path: "/", id: 1 },
     { name: "Contacts", path: "/contacts", id: 2 },
-    { name: "Company Profile", path: "/", id: 3 },
-    { name: "Users", path: "/", id: 4 },
+    { name: "Company Profile", path: "/company", id: 3 },
+    { name: "Users", path: "/users", id: 4 },
   ];
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -168,6 +170,7 @@ const Navbar = () => {
                     fontWeight: "300",
                     textDecoration: "none",
                     color: "#fff",
+                    opacity: page.path === router.pathname ? "1" : ".7",
                     margin: "0 25px",
                   }}
                   href={page.path}
@@ -215,7 +218,7 @@ const Navbar = () => {
               >
                 <MenuItem onClick={handleClose}>
                   <Link
-                    href="/"
+                    href="/users/user/?mode=view&id=1"
                     style={{ textDecoration: "none", color: "#212529" }}
                   >
                     My Profile
@@ -237,10 +240,9 @@ const Navbar = () => {
       <Drawer
         variant="persistent"
         sx={{
-          width: "240",
           flexShrink: 0,
           "& .MuiDrawer-paper": {
-            width: "90%",
+            width: "95%",
             boxSizing: "border-box",
             borderRight: 0,
             boxShadow: "0px 0px 12px #00000026",

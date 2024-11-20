@@ -22,9 +22,14 @@ const SetPassword = () => {
           >
             Set a Password
           </Typography>
-          <PasswordInput onChange={() => {}} label="Password"></PasswordInput>
+          <PasswordInput
+            value=""
+            onChange={() => {}}
+            label="Password"
+          ></PasswordInput>
           <Box sx={{ height: "31px" }}></Box>
           <PasswordInput
+            value=""
             onChange={() => {}}
             label="Confirm password"
           ></PasswordInput>
@@ -32,9 +37,12 @@ const SetPassword = () => {
           <Button
             sx={{
               fontSize: "20px",
-              textTransform: "capitalize",
-              marginTop: "50px",
+              textTransform: "none",
+              marginBottom: "30px",
+              borderRadius: "5px",
+              marginTop: "35px",
               fontWeight: "300",
+              background: "#4E73DF",
             }}
             variant="contained"
             disableElevation

@@ -1,4 +1,4 @@
-import { TextField, TextFieldProps } from "@mui/material";
+import { MenuItem, TextField, TextFieldProps } from "@mui/material";
 import React from "react";
 
 type InputProps = TextFieldProps & {
@@ -9,6 +9,7 @@ type InputProps = TextFieldProps & {
   helperText?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string;
+  style?: any;
 };
 
 const Input: React.FC<InputProps> = ({
@@ -20,26 +21,43 @@ const Input: React.FC<InputProps> = ({
   onChange,
   value,
   fullWidth = true,
+  style,
   ...otherProps
 }) => {
   return (
     <TextField
-      label={label}
       name={name}
+      placeholder={label}
       type={type}
       fullWidth={fullWidth}
       size="small"
       error={error}
+      value={value}
       helperText={helperText}
       onChange={onChange}
       {...otherProps}
       sx={{
+        ...style,
         color: "#868E96",
         "& .MuiInputBase-root": {
-          borderColor: "#E0E0E0",
+          borderRadius: "5px",
+          fontSize: "20px",
+          fontWeight: "400",
+        },
+        "& .MuiOutlinedInput-root": {
+          "& fieldset": {
+            borderColor: "#E0E0E0",
+            color: "#868E96",
+            p: "10px",
+          },
         },
         "& label.Mui-focused": {
           color: "#A0AAB4",
+        },
+        "& .MuiFormHelperText-root": {
+          position: "absolute",
+          bottom: "-24px",
+          m: 0,
         },
       }}
     ></TextField>

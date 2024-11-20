@@ -5,10 +5,9 @@ const Footer = () => {
     <>
       <Box
         sx={{
-          position: "absolute",
           width: "100%",
-          bottom: "0",
           borderTop: "solid 1px #D9D9D9",
+          backgroundColor: "#F5F5F5",
         }}
       >
         <Container
@@ -16,18 +15,26 @@ const Footer = () => {
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            height: "50px",
+            justifyContent: { xs: "center", md: "space-between" },
+            height: "60px",
             width: "100%",
           }}
         >
-          <Typography component="p" sx={{ color: "#000000", opacity: ".6" }}>
+          <Typography
+            component="p"
+            sx={{
+              color: "#000000",
+              opacity: ".6",
+              fontSize: { xs: "12px", sm: "18px" },
+            }}
+          >
             Copyright © ITM Development | Contact Book | 2022
           </Typography>
           <Typography
             component="p"
             sx={{
               color: "#000000",
+              fontSize: "18px",
               opacity: ".6",
               display: { xs: "none", md: "block" },
             }}

@@ -34,9 +34,10 @@ const ResetPassword = () => {
               sx={{
                 fontSize: "20px",
                 textTransform: "capitalize",
-                marginTop: "50px",
+                marginTop: "35px",
                 marginBottom: "55px",
-                fontWeight: "400",
+                fontWeight: "300",
+                background: "#4E73DF",
               }}
               variant="contained"
               disableElevation
@@ -48,7 +49,12 @@ const ResetPassword = () => {
           </Link>
 
           <Box sx={{ textAlign: "center" }}>
-            <Link href="/auth/signin">Back to login</Link>
+            <Link
+              style={{ color: "#4E73DF", fontSize: "20xp" }}
+              href="/auth/signin"
+            >
+              Back to login
+            </Link>
           </Box>
         </Box>
       </AuthLayout>
