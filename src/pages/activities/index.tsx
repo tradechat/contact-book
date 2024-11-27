@@ -1,5 +1,5 @@
-import LatestActivitiesTable from "@/components/latestActivitiesTable";
-import Paths from "@/components/paths";
+import LatestActivitiesTable from "@/components/tables/latestActivitiesTable";
+import Paths from "@/components/layouts/paths";
 import { Box } from "@mui/material";
 
 const Activities = () => {

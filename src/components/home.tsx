@@ -1,14 +1,44 @@
 import { Divider, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import StatisticalBox from "./statisticalBox";
+import StatisticalBox from "./actions/statisticalBox";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import EmailIcon from "@mui/icons-material/Email";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import LatestActivitiesTable from "./latestActivitiesTable";
-import Paths from "./paths";
+import LatestActivitiesTable from "./tables/latestActivitiesTable";
+import Paths from "./layouts/paths";
+import { useQuery } from "@tanstack/react-query";
+import { Contact } from "@/models/contact";
+import { getContacts } from "@/services/apiService";
 
 const HomePage = () => {
+  const {
+    isLoading,
+    error,
+    data: rows,
+  } = useQuery<Contact[]>({
+    queryKey: ["contacts"],
+    queryFn: getContacts,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+  });
+
+  const activeContactsCount =
+    rows?.filter((contact) => contact.status === "Active").length || 0;
+  const inactiveContactsCount =
+    rows?.filter((contact) => contact.status === "Inactive").length || 0;
+  const withEmailCount = rows?.filter((contact) => contact.email).length || 0;
+  const withoutEmailCount =
+    rows?.filter((contact) => !contact.email).length || 0;
+
+  if (error) {
+    console.log(error);
+  }
+
+  if (isLoading) {
+    return "Loading.....";
+  }
+
   return (
     <>
       <Paths />
@@ -29,30 +59,30 @@ const HomePage = () => {
           size={{ xs: 12, md: 12, lg: 6, xl: 6 }}
         >
           <StatisticalBox
-            count={101}
+            count={activeContactsCount}
             status="Active"
-            percentage={3}
+            percentage={3} // يمكن تحديثها بما يتناسب مع البيانات
             Icon={ArrowUpwardIcon}
             color="#1ABC9C"
           ></StatisticalBox>
           <StatisticalBox
-            count={101}
+            count={inactiveContactsCount}
             status="Inactive"
-            percentage={3}
+            percentage={3} // يمكن تحديثها بما يتناسب مع البيانات
             Icon={ArrowDownwardIcon}
             color="#FC766A"
           ></StatisticalBox>
           <StatisticalBox
-            count={101}
+            count={withEmailCount}
             status="With email"
-            percentage={3}
+            percentage={3} // يمكن تحديثها بما يتناسب مع البيانات
             Icon={EmailIcon}
             color="#2C3E50"
           ></StatisticalBox>
           <StatisticalBox
-            count={101}
+            count={withoutEmailCount}
             status="Without email"
-            percentage={3}
+            percentage={3} // يمكن تحديثها بما يتناسب مع البيانات
             Icon={CloseIcon}
             color="#5B84B1"
           ></StatisticalBox>

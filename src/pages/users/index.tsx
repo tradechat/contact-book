@@ -1,7 +1,6 @@
-import UsersTable from "@/components/usersTabel";
-import { headCells, rows } from "@/models/user";
+import UsersTable from "@/components/tables/usersTabel";
 import * as React from "react";
 
 export default function Users() {
-  return <UsersTable rows={rows} headCells={headCells}></UsersTable>;
+  return <UsersTable></UsersTable>;
 }

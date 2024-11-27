@@ -1,48 +1,81 @@
-import Paths from "@/components/paths";
+import Paths from "@/components/layouts/paths";
 import {
+  Alert,
   Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
   FormControl,
   MenuItem,
   Select,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import Input from "@/components/Input";
+import Input from "@/components/actions/Input";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { User } from "@/models/user";
-import EditOffOutlinedIcon from "@mui/icons-material/EditOffOutlined";
-import { LockedSwitch } from "./lockedSwitch";
+import { LockedSwitch } from "../actions/lockedSwitch";
+import BackButtom from "../actions/backButton";
+import FormActionsButton from "../actions/formActionsButton";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createUser, updateUser } from "@/services/apiService";
 
 interface UserFormProps {
   mode: string;
   user: User;
-  id: number;
 }
 
-const UserForm = ({ mode, user, id }: UserFormProps) => {
+const UserForm = ({ mode, user }: UserFormProps) => {
+  console.log(user);
+
   const [formData, setFormData] = useState<User>(user);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [isErrorMsg, setIsErrorMsg] = useState<Array<string>>([]);
+  const [openSnackbars, setopenSnackbars] = useState(false);
   const router = useRouter();
   const labelStyle = { fontSize: "18px", fontWeight: "400" };
+  const queryClient = useQueryClient();
+  const { id } = router.query;
+
+  const mutation = useMutation<User>({
+    mutationFn: () =>
+      mode == "add" ? createUser(formData) : updateUser(formData),
+    onError: (error: any) => {
+      console.log(error);
+      if (error.response) {
+        if (error.response.status == 400) {
+          setIsErrorMsg((prevErrors) => [...prevErrors, error.response.data]);
+        }
+      }
+    },
+    onSuccess: async (data) => {
+      console.log(data);
+
+      await queryClient.invalidateQueries({
+        queryKey: ["user", id],
+      });
+      if (mode == "add") {
+        return router.replace("/users");
+      }
+      router.back();
+    },
+  });
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(event.target.checked);
   };
 
-  const handleClick = () => {
+  const handleSubmit = () => {
     if (mode == "view") {
-      router.push(`/users/user/?mode=edite&id=${id}`);
+      return router.push(`/users/edite/${id}`);
     }
     setIsSubmitted(true);
-    if (!formData.firstName || !formData.lastName || !formData.phone) {
-      return;
-    }
+    setopenSnackbars(true);
+    setIsErrorMsg([]);
+    mutation.mutate();
   };
 
   const handleChange = (e: any) => {
@@ -52,33 +85,14 @@ const UserForm = ({ mode, user, id }: UserFormProps) => {
   const handleBack = () => {
     router.back();
   };
-  const getButtonVariant = (mode: string | undefined) => {
-    if (mode === "add" || mode === "edite") {
-      return "contained";
-    }
-    return "outlined";
-  };
 
-  const getButtonLabel = (mode: string | undefined) => {
-    console.log(mode);
-
-    if (mode === "add") {
-      return "Create";
-    }
-    if (mode === "view") {
-      return (
-        <>
-          <EditOffOutlinedIcon sx={{ mr: "8px" }} />
-          Edit
-        </>
-      );
-    }
-    return "Save";
+  const handleCloseSnackbar = () => {
+    setopenSnackbars(false);
   };
 
   return (
     <>
-      <Paths name={formData.firstName + formData.lastName}></Paths>
+      <Paths name={formData.firstName + " " + formData.lastName}></Paths>
       <Card
         sx={{
           "&.MuiCard-root": {
@@ -97,6 +111,20 @@ const UserForm = ({ mode, user, id }: UserFormProps) => {
                 justifyContent: "space-between",
               }}
             >
+              {isErrorMsg.length != 0 &&
+                isErrorMsg.map((error, index) => (
+                  <Snackbar
+                    key={index}
+                    open={openSnackbars}
+                    autoHideDuration={4000}
+                    onClose={handleCloseSnackbar}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                  >
+                    <Alert sx={{ pr: "40px" }} severity="error">
+                      {error}
+                    </Alert>
+                  </Snackbar>
+                ))}
               <Typography sx={{ fontSize: "20px" }}>User details</Typography>
               {mode != "add" && (
                 <Box
@@ -133,6 +161,10 @@ const UserForm = ({ mode, user, id }: UserFormProps) => {
         >
           <Grid
             component="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
             container
             justifyContent="space-between"
             columnGap="18px"
@@ -147,6 +179,7 @@ const UserForm = ({ mode, user, id }: UserFormProps) => {
                   </Box>
                 </Typography>
                 <Input
+                  disabled={mode == "view"}
                   type="text"
                   name="firstName"
                   label="First Name"
@@ -171,6 +204,7 @@ const UserForm = ({ mode, user, id }: UserFormProps) => {
                   </Box>
                 </Typography>
                 <Input
+                  disabled={mode == "view"}
                   type="text"
                   name="lastName"
                   label="Last Name"
@@ -195,11 +229,18 @@ const UserForm = ({ mode, user, id }: UserFormProps) => {
                   </Box>
                 </Typography>
                 <Input
+                  disabled={mode == "view"}
                   type="email"
                   name="email"
                   label="name@example.com"
                   value={formData.email}
                   onChange={handleChange}
+                  error={isSubmitted && !formData.email}
+                  helperText={
+                    isSubmitted && !formData.email
+                      ? "Please enter the email."
+                      : ""
+                  }
                   style={{ marginTop: "13px" }}
                 ></Input>
               </Box>
@@ -213,13 +254,14 @@ const UserForm = ({ mode, user, id }: UserFormProps) => {
                   </Box>
                 </Typography>
                 <Input
+                  disabled={mode == "view"}
                   type="text"
-                  name="phone"
-                  value={formData.phone}
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
                   label="555-123-4567"
-                  error={isSubmitted && !formData.phone}
+                  error={isSubmitted && !formData.phoneNumber}
                   helperText={
-                    isSubmitted && !formData.phone
+                    isSubmitted && !formData.phoneNumber
                       ? "Please enter a phone number."
                       : ""
                   }
@@ -240,15 +282,17 @@ const UserForm = ({ mode, user, id }: UserFormProps) => {
 
                 <FormControl sx={{ marginTop: "13px" }} fullWidth size="small">
                   <Select
+                    disabled={mode == "view"}
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={formData.type}
+                    value={formData.role}
                     placeholder="Select user type"
                     name="type"
                     onChange={handleChange}
                   >
-                    <MenuItem value={"admin"}>Admin</MenuItem>
-                    <MenuItem value={"user"}>User</MenuItem>
+                    <MenuItem value={"Owner"}>Owner</MenuItem>
+                    <MenuItem value={"Admin"}>Admin</MenuItem>
+                    <MenuItem value={"User"}>User</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
@@ -262,33 +306,10 @@ const UserForm = ({ mode, user, id }: UserFormProps) => {
                   mt: "30px",
                 }}
               >
-                <Button
-                  variant={getButtonVariant(mode)}
-                  size="small"
-                  onClick={handleClick}
-                  sx={{
-                    marginRight: "18px",
-                    textTransform: "capitalize",
-                    fontSize: "18px",
-                    fontWeight: "300",
-                    px: "61px",
-                  }}
-                  disableElevation
-                >
-                  {getButtonLabel(mode)}
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={handleBack}
-                  sx={{
-                    textTransform: "capitalize",
-                    fontSize: "18px",
-                    fontWeight: "300",
-                    px: "61px",
-                  }}
-                >
-                  Back
-                </Button>
+                <FormActionsButton
+                  mode={mutation.isPending ? "loading" : mode}
+                />{" "}
+                <BackButtom handleBack={handleBack} />
               </Box>
             </Grid>
           </Grid>

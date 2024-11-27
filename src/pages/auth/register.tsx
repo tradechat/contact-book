@@ -1,27 +1,30 @@
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
   FormControlLabel,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import AuthLayout from "@/components/authLayout";
+import AuthLayout from "@/components/layouts/authLayout";
 import Grid from "@mui/material/Grid2";
-import Input from "@/components/Input";
-import PasswordInput from "@/components/passwordInput";
-import CountrySelect from "@/components/countrySelect";
+import Input from "@/components/actions/Input";
+import PasswordInput from "@/components/actions/passwordInput";
+import CountrySelect from "@/components/actions/countrySelect";
 import Link from "next/link";
-import { RegisterData } from "@/models/register";
-
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import { register } from "@/services/apiService";
 const Register = () => {
-  const [formData, setFormData] = useState<RegisterData>({
+  const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    phoneNumber: "",
     password: "",
     companyName: "",
+    phoneNumber: "",
     vatNumber: "",
     streetOne: "",
     streetTwo: "",
@@ -30,9 +33,12 @@ const Register = () => {
     zip: "",
     country: "",
   });
-
+  const [isErrorMsg, setIsErrorMsg] = useState<Array<string>>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isAgree, setIsAgree] = useState(false);
+  const [openSnackbars, setopenSnackbars] = React.useState(false);
 
+  const router = useRouter();
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -43,9 +49,48 @@ const Register = () => {
     });
   };
 
-  const handleSumit = () => {
+  const mutation = useMutation({
+    mutationFn: () => register(formData),
+    onError: (error: any) => {
+      if (error.response) {
+        console.log(error.response);
+
+        if (error.response.status == 403) {
+          setIsErrorMsg((prevErrors) => [
+            ...prevErrors,
+            "Email already exists",
+          ]);
+        }
+        if (error.response.data.errors) {
+          for (const [key, messages] of Object.entries(
+            error.response.data.errors
+          )) {
+            (messages as string[]).forEach((message) => {
+              setIsErrorMsg((prevErrors) => [...prevErrors, message]);
+            });
+          }
+        }
+      }
+    },
+    onSuccess: () => {
+      router.push("/auth/signin");
+    },
+  });
+
+  const handleSubmit = () => {
+    setopenSnackbars(true);
     setIsSubmitted(true);
-    console.log("Form Data:", formData);
+    setIsErrorMsg([]);
+    console.log(formData);
+    mutation.mutate();
+  };
+
+  const handleCloseSnackbar = () => {
+    setopenSnackbars(false);
+  };
+
+  const handleChangeCheckBox = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsAgree(event.target.checked);
   };
 
   const girdSize = { xs: 12, md: 5.5 };
@@ -57,7 +102,7 @@ const Register = () => {
           component="form"
           onSubmit={(e) => {
             e.preventDefault();
-            handleSumit();
+            handleSubmit();
           }}
           sx={{
             width: "100%",
@@ -65,6 +110,20 @@ const Register = () => {
             pb: "30px",
           }}
         >
+          {isErrorMsg.length != 0 &&
+            isErrorMsg.map((error, index) => (
+              <Snackbar
+                key={index}
+                open={openSnackbars}
+                autoHideDuration={4000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              >
+                <Alert sx={{ pr: "40px" }} severity="error">
+                  {error}
+                </Alert>
+              </Snackbar>
+            ))}
           <Typography
             component="h2"
             sx={{
@@ -101,9 +160,21 @@ const Register = () => {
                 <Input
                   name="firstName"
                   label="First Name"
+                  helperText={
+                    isSubmitted && !formData.firstName
+                      ? "Please enter a first name"
+                      : ""
+                  }
+                  required
+                  aria-required={true}
+                  error={isSubmitted && !formData.firstName}
                   onChange={handleChange}
                   value={formData.firstName}
                   fullWidth
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
               <Grid size={girdSize}>
@@ -112,7 +183,18 @@ const Register = () => {
                   label="Last Name"
                   onChange={handleChange}
                   value={formData.lastName}
+                  helperText={
+                    isSubmitted && !formData.lastName
+                      ? "Please enter a last name"
+                      : ""
+                  }
+                  error={isSubmitted && !formData.lastName}
                   fullWidth
+                  required
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
               <Grid size={girdSize}>
@@ -121,14 +203,34 @@ const Register = () => {
                   label="Email"
                   onChange={handleChange}
                   value={formData.email}
+                  helperText={
+                    isSubmitted && !formData.email ? "Please enter email" : ""
+                  }
+                  error={isSubmitted && !formData.email}
                   fullWidth
+                  required
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
               <Grid size={girdSize}>
                 <PasswordInput
-                  label="Password"
                   onChange={handleChange}
+                  placeholder="Password"
+                  helperText={
+                    isSubmitted && !formData.password
+                      ? "Please enter a password"
+                      : ""
+                  }
+                  error={isSubmitted && !formData.password}
                   value={formData.password}
+                  required
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
             </Grid>
@@ -158,7 +260,18 @@ const Register = () => {
                   label="Company Name"
                   onChange={handleChange}
                   value={formData.companyName}
+                  helperText={
+                    isSubmitted && !formData.companyName
+                      ? "Please enter a company name"
+                      : ""
+                  }
+                  error={isSubmitted && !formData.companyName}
                   fullWidth
+                  required
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
               <Grid size={girdSize}>
@@ -167,7 +280,18 @@ const Register = () => {
                   label="VAT Number"
                   onChange={handleChange}
                   value={formData.vatNumber}
+                  helperText={
+                    isSubmitted && !formData.vatNumber
+                      ? "Please enter a VAT numver"
+                      : ""
+                  }
+                  error={isSubmitted && !formData.vatNumber}
                   fullWidth
+                  required
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
               <Grid size={girdSize}>
@@ -176,15 +300,26 @@ const Register = () => {
                   label="Street"
                   onChange={handleChange}
                   value={formData.streetOne}
+                  helperText={
+                    isSubmitted && !formData.streetOne
+                      ? "Please enter a street name"
+                      : ""
+                  }
+                  error={isSubmitted && !formData.streetOne}
                   fullWidth
+                  required
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
               <Grid size={girdSize}>
                 <Input
-                  name="streetTwo"
-                  label="Street 2 (Optional)"
+                  name="phoneNumber"
+                  label="Phone Number"
                   onChange={handleChange}
-                  value={formData.streetTwo}
+                  value={formData.phoneNumber}
                   fullWidth
                 />
               </Grid>
@@ -194,7 +329,18 @@ const Register = () => {
                   label="City"
                   onChange={handleChange}
                   value={formData.city}
+                  helperText={
+                    isSubmitted && !formData.city
+                      ? "Please enter a city name"
+                      : ""
+                  }
+                  error={isSubmitted && !formData.city}
                   fullWidth
+                  required
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
               <Grid size={girdSize}>
@@ -203,7 +349,18 @@ const Register = () => {
                   label="State"
                   onChange={handleChange}
                   value={formData.state}
+                  helperText={
+                    isSubmitted && !formData.state
+                      ? "Please enter a state name"
+                      : ""
+                  }
+                  error={isSubmitted && !formData.state}
                   fullWidth
+                  required
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
               <Grid size={girdSize}>
@@ -212,7 +369,18 @@ const Register = () => {
                   label="Zip"
                   onChange={handleChange}
                   value={formData.zip}
+                  helperText={
+                    isSubmitted && !formData.zip
+                      ? "Please enter a zip number"
+                      : ""
+                  }
+                  error={isSubmitted && !formData.zip}
                   fullWidth
+                  required
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
               <Grid size={girdSize}>
@@ -221,19 +389,34 @@ const Register = () => {
                   onChange={(value) =>
                     setFormData({ ...formData, country: value })
                   }
+                  helperText={
+                    isSubmitted && !formData.country
+                      ? "Please enter a country name"
+                      : ""
+                  }
+                  error={isSubmitted && !formData.country}
+                  setIsSubmitted={() => {
+                    setIsSubmitted(true);
+                  }}
                 />
               </Grid>
             </Grid>
             {/* Billing details End*/}
 
             <FormControlLabel
-              control={<Checkbox sx={{ color: "#B7B7B7" }} />}
+              control={
+                <Checkbox
+                  sx={{ color: "#B7B7B7" }}
+                  checked={isAgree}
+                  onChange={handleChangeCheckBox}
+                />
+              }
               label="I agree to the website terms and conditions"
               sx={{
                 marginTop: "20px",
                 "& .MuiFormControlLabel-label": {
                   fontSize: "16px",
-                  color: "#212529",
+                  color: isSubmitted && !isAgree ? "#d32f2f" : "#212529",
                 },
               }}
             />
@@ -254,7 +437,7 @@ const Register = () => {
             fullWidth
             type="submit"
           >
-            Register
+            {mutation.isPending ? "Loading..." : "Register"}
           </Button>
           <Box sx={{ textAlign: "center" }}>
             <Link

@@ -1,13 +1,97 @@
-import { Box, Button, Typography } from "@mui/material";
-import React, { ReactElement } from "react";
-import AuthLayout from "@/components/authLayout";
-import PasswordInput from "@/components/passwordInput";
-
+import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
+import React, { useState } from "react";
+import AuthLayout from "@/components/layouts/authLayout";
+import PasswordInput from "@/components/actions/passwordInput";
+import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
+import { setPassword } from "@/services/apiService";
 const SetPassword = () => {
+  const [isPassword, setIsPassword] = useState("");
+  const [isConfirmPassword, setIsConfirmPassword] = useState("");
+  const [isErrorMsg, setIsErrorMsg] = useState<Array<string>>([]);
+  const [openSnackbars, setopenSnackbars] = React.useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const router = useRouter();
+  const { id, code } = router.query;
+
+  const mutation = useMutation({
+    mutationFn: () =>
+      setPassword(
+        {
+          password: isPassword,
+        },
+        id,
+        code
+      ),
+    onError: (error: any) => {
+      if (error.response) {
+        if (error.response.status == 404) {
+          setIsErrorMsg((prevErrors) => [...prevErrors, error.response.data]);
+        }
+        if (error.response.data.errors) {
+          for (const [key, messages] of Object.entries(
+            error.response.data.errors
+          )) {
+            (messages as string[]).forEach((message) => {
+              setIsErrorMsg((prevErrors) => [...prevErrors, message]);
+            });
+          }
+        }
+      }
+    },
+    onSuccess: () => {
+      router.push("/auth/signin");
+    },
+  });
+
+  const handleSubmit = () => {
+    setIsErrorMsg([]);
+    setopenSnackbars(true);
+    setIsSubmitted(true);
+
+    if (isPassword == isConfirmPassword) {
+      mutation.mutate();
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setopenSnackbars(false);
+  };
+
+  const getHelperText = () => {
+    if (isSubmitted && !isConfirmPassword) {
+      return "Please enter a confirm password";
+    } else if (isSubmitted && isPassword !== isConfirmPassword) {
+      return "Password does not match";
+    }
+    return "";
+  };
+
   return (
     <>
       <AuthLayout imageSize={7.3} formSize={4.7}>
-        <Box component="form" sx={{ width: "100%", maxWidth: "370px" }}>
+        <Box
+          component="form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          sx={{ width: "100%", maxWidth: "370px" }}
+        >
+          {isErrorMsg.length != 0 &&
+            isErrorMsg.map((error, index) => (
+              <Snackbar
+                key={index}
+                open={openSnackbars}
+                autoHideDuration={4000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              >
+                <Alert sx={{ pr: "40px" }} severity="error">
+                  {error}
+                </Alert>
+              </Snackbar>
+            ))}
           <Typography
             component="h2"
             sx={{
@@ -23,22 +107,42 @@ const SetPassword = () => {
             Set a Password
           </Typography>
           <PasswordInput
-            value=""
-            onChange={() => {}}
-            label="Password"
+            value={isPassword}
+            placeholder="Password"
+            onChange={(e) => {
+              setIsPassword(e.target.value);
+            }}
+            helperText={
+              isSubmitted && !isPassword ? "Please enter a password" : ""
+            }
+            error={isSubmitted && !isPassword}
+            required
+            onInvalid={(event) => {
+              event.preventDefault();
+              setIsSubmitted(true);
+            }}
           ></PasswordInput>
           <Box sx={{ height: "31px" }}></Box>
           <PasswordInput
-            value=""
-            onChange={() => {}}
-            label="Confirm password"
+            value={isConfirmPassword}
+            placeholder="Confirm password"
+            onChange={(e) => {
+              setIsConfirmPassword(e.target.value);
+            }}
+            helperText={getHelperText()}
+            error={isSubmitted && !isConfirmPassword}
+            required
+            onInvalid={(event) => {
+              event.preventDefault();
+              setIsSubmitted(true);
+            }}
           ></PasswordInput>
 
           <Button
             sx={{
               fontSize: "20px",
               textTransform: "none",
-              marginBottom: "30px",
+              marginBottom: "33px",
               borderRadius: "5px",
               marginTop: "35px",
               fontWeight: "300",
@@ -47,9 +151,10 @@ const SetPassword = () => {
             variant="contained"
             disableElevation
             size="small"
+            type="submit"
             fullWidth
           >
-            Reset Password
+            {mutation.isPending ? "Loading..." : " Reset Password"}
           </Button>
         </Box>
       </AuthLayout>

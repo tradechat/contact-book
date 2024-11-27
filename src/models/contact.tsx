@@ -1,27 +1,28 @@
 export interface Contact {
   id: number;
-  favorite?: boolean;
-  image: string;
+  isFavorite?: boolean;
+  imageUrl: string;
   firstName: string;
   lastName: string;
   email: string;
-  email2?: string;
-  phone: string;
-  mobile?: string;
+  emailTwo?: string;
+  phoneNumber: string;
+  mobileNumber?: string;
   address?: string;
-  address2?: string;
+  addressTwo?: string;
   status?: string;
   action?: string;
+  imageUploadFile?: any;
 }
 
 export function createContact(
   id: number,
-  favorite: boolean,
-  image: string,
+  isFavorite: boolean,
+  imageUrl: string,
   firstName: string,
   lastName: string,
   email: string,
-  phone: string,
+  phoneNumber: string,
   status: string,
   action: string
 ): Contact {
@@ -30,11 +31,11 @@ export function createContact(
     email,
     firstName,
     lastName,
-    phone,
+    phoneNumber,
     status,
     action,
-    favorite,
-    image,
+    isFavorite,
+    imageUrl,
   };
 }
 
@@ -105,83 +106,6 @@ export const rows = [
     "Inactive",
     "edit"
   ),
-  createContact(
-    7,
-    false,
-    "image6.png",
-    "Emma",
-    "Davis",
-    "emma.davis@example.com",
-    "+49 789 123 456",
-    "Inactive",
-    "edit"
-  ),
-  createContact(
-    8,
-    false,
-    "image6.png",
-    "Emma",
-    "Davis",
-    "emma.davis@example.com",
-    "+49 789 123 456",
-    "Inactive",
-    "edit"
-  ),
-  createContact(
-    9,
-    false,
-    "image6.png",
-    "Emma",
-    "Davis",
-    "emma.davis@example.com",
-    "+49 789 123 456",
-    "Inactive",
-    "edit"
-  ),
-  createContact(
-    10,
-    false,
-    "image6.png",
-    "Emma",
-    "Davis",
-    "emma.davis@example.com",
-    "+49 789 123 456",
-    "Inactive",
-    "edit"
-  ),
-  createContact(
-    11,
-    false,
-    "image6.png",
-    "Emma",
-    "Davis",
-    "emma.davis@example.com",
-    "+49 789 123 456",
-    "Inactive",
-    "edit"
-  ),
-  createContact(
-    12,
-    false,
-    "image6.png",
-    "Emma",
-    "Davis",
-    "emma.davis@example.com",
-    "+49 789 123 456",
-    "Inactive",
-    "edit"
-  ),
-  createContact(
-    13,
-    false,
-    "image6.png",
-    "Emma",
-    "Davis",
-    "emma.davis@example.com",
-    "+49 789 123 456",
-    "Inactive",
-    "edit"
-  ),
 ];
 
 export interface HeadCell {
@@ -200,14 +124,14 @@ export const headCells: HeadCell[] = [
     label: "ID",
   },
   {
-    id: "favorite",
+    id: "isFavorite",
     numeric: false,
     disablePadding: true,
     label: "Favorite",
     align: "center",
   },
   {
-    id: "image",
+    id: "imageUrl",
     numeric: true,
     disablePadding: true,
     label: "Image",
@@ -233,7 +157,7 @@ export const headCells: HeadCell[] = [
     align: "center",
   },
   {
-    id: "phone",
+    id: "phoneNumber",
     numeric: true,
     disablePadding: true,
     label: "Phone",

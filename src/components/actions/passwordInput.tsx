@@ -1,23 +1,31 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   FormControl,
+  FormHelperText,
   IconButton,
   InputAdornment,
   OutlinedInput,
+  OutlinedInputProps,
 } from "@mui/material";
 import React from "react";
 
-interface PasswordInputProps {
+type PasswordInputProps = OutlinedInputProps & {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  label?: string;
   value: string;
-}
+  helperText?: string;
+  error?: boolean;
+};
 
-const PasswordInput = ({ onChange, value }: PasswordInputProps) => {
+const PasswordInput = ({
+  onChange,
+  value,
+  helperText,
+  error,
+  ...otherProps
+}: PasswordInputProps) => {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -34,12 +42,22 @@ const PasswordInput = ({ onChange, value }: PasswordInputProps) => {
     <>
       <FormControl variant="outlined" fullWidth size="small">
         <OutlinedInput
+          {...otherProps}
+          error={error}
           name="password"
-          sx={{ fontSize: "20px", fontWeight: "400" }}
+          sx={{
+            fontSize: "20px",
+            fontWeight: "400",
+            "&.MuiInputBase-root": {
+              minHeight: "48px",
+              "& fieldset": {
+                borderColor: "#E0E0E0",
+                color: "#868E96",
+              },
+            },
+          }}
           onChange={onChange}
-          id="outlined-adornment-password"
           type={showPassword ? "text" : "password"}
-          placeholder="Password"
           value={value}
           endAdornment={
             <InputAdornment position="end">
@@ -57,6 +75,16 @@ const PasswordInput = ({ onChange, value }: PasswordInputProps) => {
             </InputAdornment>
           }
         />
+        <FormHelperText
+          sx={{
+            color: "#d32f2f",
+            position: "absolute",
+            bottom: "-26px",
+            m: 0,
+          }}
+        >
+          {helperText}
+        </FormHelperText>
       </FormControl>
     </>
   );

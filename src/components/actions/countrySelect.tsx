@@ -1,21 +1,50 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
+import TextField, { TextFieldProps } from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
 interface CountrySelectProps {
   onChange: (value: string) => void;
   value: string;
+  helperText: string;
+  error: boolean;
+  setIsSubmitted: () => void;
+  textFieldProps?: TextFieldProps;
+  disabled?: boolean;
 }
 
-export default function CountrySelect({ value, onChange }: CountrySelectProps) {
+export default function CountrySelect({
+  value,
+  onChange,
+  error,
+  helperText,
+  setIsSubmitted,
+  disabled,
+}: CountrySelectProps) {
+  console.log(value);
+
   return (
     <Autocomplete
       id="country-select-demo"
+      disabled={disabled}
       onChange={(event, newValue) => {
-        onChange(newValue ? newValue.label : ""); // Pass the label of the selected country
+        console.log(newValue);
+
+        onChange(newValue ? newValue.label : "");
       }}
-      sx={{ width: "100%" }}
+      sx={{
+        width: "100%",
+        "& fieldset": { borderColor: "#E0E0E0" },
+        "& .MuiInputBase-sizeSmall ": {
+          py: "7.1px!important",
+        },
+        "& .MuiInputBase-root": {
+          borderRadius: "5px",
+          fontSize: "20px",
+          fontWeight: "400",
+        },
+      }}
+      size="small"
       options={countries}
       value={countries.find((country) => country.label === value) || null}
       autoHighlight
@@ -43,22 +72,28 @@ export default function CountrySelect({ value, onChange }: CountrySelectProps) {
       }}
       renderInput={(params) => (
         <TextField
+          required
           {...params}
-          size="small"
+          error={error}
           fullWidth
-          sx={{
-            "& .MuiInputBase-root": {
-              borderRadius: "5px",
-              fontSize: "20px",
-              fontWeight: "400",
-            },
-          }}
           placeholder="Select your country"
           slotProps={{
             htmlInput: {
               ...params.inputProps,
               autoComplete: "new-password", // disable autocomplete and autofill
             },
+          }}
+          helperText={helperText}
+          sx={{
+            "& .MuiFormHelperText-root": {
+              position: "absolute",
+              bottom: "-26px",
+              m: 0,
+            },
+          }}
+          onInvalid={(event) => {
+            event.preventDefault();
+            setIsSubmitted;
           }}
         />
       )}

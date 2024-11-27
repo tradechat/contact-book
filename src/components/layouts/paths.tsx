@@ -1,4 +1,5 @@
-import { Breadcrumbs, Link, Typography } from "@mui/material";
+import { Breadcrumbs, Typography } from "@mui/material";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 interface PathProps {
@@ -54,8 +55,6 @@ const Paths = ({ name }: PathProps) => {
       {pathArray.map((segment, index) => {
         const href = "/" + pathArray.slice(0, index + 1).join("/");
         const isLast = index === pathArray.length - 1;
-        console.log(isLast);
-
         return isLast ? (
           <Typography key={href} sx={{ color: "#000000", fontSize: "24px" }}>
             {generatePathLabel(segment)}

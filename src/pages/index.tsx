@@ -1,6 +1,3 @@
-// pages/protected-page.tsx
-import Layout from "@/components/layout";
-import { CssBaseline } from "@mui/material";
 import { GetServerSideProps } from "next";
 import HomePage from "@/components/home";
 interface HomeProps {
@@ -13,9 +10,11 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
   context
 ) => {
   const { req } = context;
-  const userToken = req.cookies["user-token"];
+  const userToken = req.cookies["token"];
 
-  if (userToken) {
+  console.log(userToken);
+
+  if (!userToken) {
     return {
       redirect: {
         destination: "/auth/signin",
@@ -23,20 +22,14 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
       },
     };
   }
-
   const userData = { name: "Amir" };
-
   return {
     props: { userData },
   };
 };
 
 const Home: React.FC<HomeProps> = ({ userData }) => {
-  return (
-    <>
-      <HomePage></HomePage>
-    </>
-  );
+  return <HomePage></HomePage>;
 };
 
 export default Home;

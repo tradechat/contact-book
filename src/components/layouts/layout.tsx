@@ -3,6 +3,8 @@ import { ReactNode } from "react";
 import React from "react";
 import Navbar from "./navbar";
 import Footer from "./footer";
+import { useQuery } from "@tanstack/react-query";
+import { getCurrentUser } from "@/services/apiService";
 
 interface LayoutPros {
   children: ReactNode;

@@ -1,24 +1,116 @@
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
   FormControlLabel,
+  Snackbar,
   Typography,
 } from "@mui/material";
-import React from "react";
-import AuthLayout from "@/components/authLayout";
-import Input from "@/components/Input";
-import PasswordInput from "@/components/passwordInput";
+import React, { useState } from "react";
+import AuthLayout from "@/components/layouts/authLayout";
+import Input from "@/components/actions/Input";
+import PasswordInput from "@/components/actions/passwordInput";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
+import { setCookie } from "cookies-next/client";
+import { login } from "@/services/apiService";
 
 const SignIn = () => {
+  const [isErrorMsg, setIsErrorMsg] = useState<Array<string>>([]);
+  const [openSnackbars, setopenSnackbars] = React.useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const userouter = useRouter();
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const mutation = useMutation({
+    mutationFn: () => {
+      return login(formData);
+    },
+    onError: (error: any) => {
+      if (error.response) {
+        if (error.response.status == 401) {
+          setIsErrorMsg((prevErrors) => [
+            ...prevErrors,
+            "Email or password is wrong",
+          ]);
+        }
+        if (error.response.data.errors) {
+          for (const [key, messages] of Object.entries(
+            error.response.data.errors
+          )) {
+            (messages as string[]).forEach((message) => {
+              setIsErrorMsg((prevErrors) => [...prevErrors, message]);
+            });
+          }
+        }
+      }
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      const token = data.data.token;
+      setCookie("token", token);
+      userouter.push("/");
+    },
+  });
+
+  const handleSubmit = () => {
+    setopenSnackbars(true);
+    setIsSubmitted(true);
+    setIsErrorMsg([]);
+    console.log(formData);
+    mutation.mutate();
+  };
+
+  const handleCloseSnackbar = () => {
+    setopenSnackbars(false);
+  };
+
   return (
     <>
       <AuthLayout imageSize={7.3} formSize={4.7}>
         <Box
           component="form"
-          sx={{ width: "100%", maxWidth: "370px", pb: "30px" }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          sx={{
+            width: "100%",
+            maxWidth: "370px",
+            pb: "30px",
+          }}
         >
+          {isErrorMsg.length != 0 &&
+            isErrorMsg.map((error, index) => (
+              <Snackbar
+                key={index}
+                open={openSnackbars}
+                autoHideDuration={4000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              >
+                <Alert sx={{ pr: "40px" }} severity="error">
+                  {error}
+                </Alert>
+              </Snackbar>
+            ))}
+
           <Typography
             component="h2"
             sx={{
@@ -42,13 +134,36 @@ const SignIn = () => {
             />
           </Box>
           <Input
-            label={"Email"}
             name="email"
-            onChange={() => {}}
-            value=""
-          ></Input>
+            label="Email"
+            onChange={handleChange}
+            value={formData.email}
+            helperText={
+              isSubmitted && !formData.email ? "Please enter email" : ""
+            }
+            error={isSubmitted && !formData.email}
+            fullWidth
+            required
+            onInvalid={(event) => {
+              event.preventDefault();
+              setIsSubmitted(true);
+            }}
+          />
           <Box sx={{ height: "35px" }}></Box>
-          <PasswordInput onChange={() => {}}></PasswordInput>
+          <PasswordInput
+            onChange={handleChange}
+            helperText={
+              isSubmitted && !formData.password ? "Please enter a password" : ""
+            }
+            error={isSubmitted && !formData.password}
+            value={formData.password}
+            required
+            placeholder="Password"
+            onInvalid={(event) => {
+              event.preventDefault();
+              setIsSubmitted(true);
+            }}
+          />
           <Box
             sx={{
               display: "flex",
@@ -93,8 +208,9 @@ const SignIn = () => {
             disableElevation
             size="small"
             fullWidth
+            type="submit"
           >
-            Sigin in
+            {mutation.isPending ? "Loading..." : " Sigin in"}
           </Button>
           <Box
             sx={{
@@ -130,7 +246,12 @@ const SignIn = () => {
             ></Box>
           </Box>
           <Box
-            sx={{ width: "100%", display: "flex", justifyContent: "center" }}
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              position: "relative",
+            }}
           >
             <Link href="/auth/register">
               <Button
@@ -148,6 +269,22 @@ const SignIn = () => {
                 Sign up
               </Button>
             </Link>
+            {/* 
+            {isErrorMsg && (
+             <Typography
+                sx={{
+                  mt: "20px",
+                  color: "red",
+                  position: "absolute",
+                  top: "60px",
+                  left: 0,
+                  width: "100%",
+                  textAlign: "center",
+                }}
+              >
+
+              </Typography>
+            )} */}
           </Box>
         </Box>
       </AuthLayout>

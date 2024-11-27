@@ -1,10 +1,11 @@
 export interface Company {
-  name: string;
-  street: string;
-  street2: string;
+  id?: number;
+  companyName: string;
+  streetOne: string;
+  streetTwo: string;
   city: string;
   zip: string;
-  vat: string;
+  vatNumber: string;
   state: string;
-  contry: string;
+  country: string;
 }

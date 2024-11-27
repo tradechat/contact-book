@@ -23,7 +23,7 @@ const CompanyProfile = () => {
   return (
     <>
       <Paths></Paths>
-      <CompanyForm mode="view" company={company!} />
+      <CompanyForm mode="edite" company={company!} />
     </>
   );
 };

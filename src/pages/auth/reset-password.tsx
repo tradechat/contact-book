@@ -1,14 +1,87 @@
-import { Box, Button, Typography } from "@mui/material";
-import React, { ReactElement } from "react";
-import AuthLayout from "@/components/authLayout";
-import Input from "@/components/Input";
+import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
+import React, { ReactElement, useState } from "react";
+import AuthLayout from "@/components/layouts/authLayout";
+import Input from "@/components/actions/Input";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
+import { resetPassword } from "@/services/apiService";
 
 const ResetPassword = () => {
+  const [isEmail, setIsEmail] = useState("");
+  const [isErrorMsg, setIsErrorMsg] = useState<Array<string>>([]);
+  const [openSnackbars, setopenSnackbars] = React.useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const userouter = useRouter();
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setIsEmail(e.target.value);
+  };
+
+  const mutation = useMutation({
+    mutationFn: () => {
+      return resetPassword({ email: isEmail });
+    },
+    onError: (error: any) => {
+      if (error.response) {
+        if (error.response.status == 404) {
+          setIsErrorMsg((prevErrors) => [...prevErrors, error.response.data]);
+        }
+        if (error.response.data.errors) {
+          for (const [key, messages] of Object.entries(
+            error.response.data.errors
+          )) {
+            (messages as string[]).forEach((message) => {
+              setIsErrorMsg((prevErrors) => [...prevErrors, message]);
+            });
+          }
+        }
+      }
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      userouter.push("/auth/set-password");
+    },
+  });
+
+  const handleSubmit = () => {
+    setopenSnackbars(true);
+    setIsSubmitted(true);
+    setIsErrorMsg([]);
+    console.log(isEmail);
+    mutation.mutate();
+  };
+
+  const handleCloseSnackbar = () => {
+    setopenSnackbars(false);
+  };
+
   return (
     <>
       <AuthLayout imageSize={7.3} formSize={4.7}>
-        <Box component="form" sx={{ width: "100%", maxWidth: "370px" }}>
+        <Box
+          component="form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          sx={{ width: "100%", maxWidth: "370px" }}
+        >
+          {isErrorMsg.length != 0 &&
+            isErrorMsg.map((error, index) => (
+              <Snackbar
+                key={index}
+                open={openSnackbars}
+                autoHideDuration={4000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              >
+                <Alert sx={{ pr: "40px" }} severity="error">
+                  {error}
+                </Alert>
+              </Snackbar>
+            ))}
           <Typography
             component="h2"
             sx={{
@@ -26,31 +99,41 @@ const ResetPassword = () => {
           <Input
             label={"Enter your email address"}
             name="email"
-            onChange={() => {}}
-            value=""
+            onChange={handleChange}
+            value={isEmail}
+            helperText={isSubmitted && !isEmail ? "Please enter email" : ""}
+            error={isSubmitted && !isEmail}
+            fullWidth
+            required
+            onInvalid={(event) => {
+              event.preventDefault();
+              setIsSubmitted(true);
+            }}
           ></Input>
-          <Link href="/auth/set-password">
-            <Button
-              sx={{
-                fontSize: "20px",
-                textTransform: "capitalize",
-                marginTop: "35px",
-                marginBottom: "55px",
-                fontWeight: "300",
-                background: "#4E73DF",
-              }}
-              variant="contained"
-              disableElevation
-              size="small"
-              fullWidth
-            >
-              Send
-            </Button>
-          </Link>
-
-          <Box sx={{ textAlign: "center" }}>
+          <Button
+            sx={{
+              fontSize: "20px",
+              textTransform: "capitalize",
+              marginTop: "35px",
+              marginBottom: "57px",
+              fontWeight: "300",
+              background: "#4E73DF",
+            }}
+            variant="contained"
+            disableElevation
+            size="small"
+            type="submit"
+            fullWidth
+          >
+            {mutation.isPending ? "Loading..." : "Sned"}
+          </Button>
+          <Box sx={{ textAlign: "center", position: "relative" }}>
             <Link
-              style={{ color: "#4E73DF", fontSize: "20xp" }}
+              style={{
+                textAlign: "center",
+                color: "#4E73DF",
+                fontSize: "20px",
+              }}
               href="/auth/signin"
             >
               Back to login

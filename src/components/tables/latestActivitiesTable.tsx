@@ -4,8 +4,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Pagination,
-  PaginationItem,
   Table,
   TableBody,
   TableCell,
@@ -14,27 +12,15 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import PaginationComponent from "../actions/paginationComponent";
+import { useQuery } from "@tanstack/react-query";
+import { getActivities } from "@/services/apiService";
+import { useRouter } from "next/router";
 
 interface LatestActivitiesTableProps {
   headShow: boolean;
 }
-
-function createData(name: string, date: string, status: string, admin: string) {
-  return { name, date, status, admin };
-}
-
-const rows = [
-  createData("Adam Smith", "01 Jan 2022", "Add", "Noor"),
-  createData("Ronald Markson", "01 Jan 2022", "Delete", "David"),
-  createData("David Walso", "01 Jan 2022", "Update", "Chris"),
-  createData("Adam Waldo", "01 Jan 2022", "Access", "Noor"),
-  createData("John Bullak", "01 Jan 2022", "Email sent", "Noor"),
-  createData("Matt Adams", "01 Jan 2022", "Add", "Noor"),
-  createData("Matt Adams", "01 Jan 2022", "Add", "Noor"),
-  createData("Matt Adams", "01 Jan 2022", "Add", "Noor"),
-  createData("Matt Adams", "01 Jan 2022", "Add", "Noor"),
-];
 
 const statusColors = [
   { status: "Add", color: "#00AC69" },
@@ -50,13 +36,48 @@ const getStatusColor = (status: string) => {
 };
 
 const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
-  const [page, setPage] = React.useState(0);
+  const {
+    isLoading,
+    error,
+    data: rows,
+  } = useQuery<Array<any>>({
+    queryKey: ["activities"],
+    queryFn: getActivities,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+  });
+
+  const [page, setPage] = useState(0);
   const showRow = headShow ? 10 : 6;
-  const pageCount = Math.ceil(rows.length / showRow);
-  const visibleRows = React.useMemo(
-    () => rows.slice(page * showRow, page * showRow + showRow),
-    [page, showRow]
-  );
+  const [pageCount, setPageCount] = useState(0);
+  const router = useRouter();
+  const { query } = router;
+
+  useEffect(() => {
+    if (query.page) {
+      const pageNumber = parseInt(query.page as string, 10) - 1;
+      setPage(pageNumber >= 0 ? pageNumber : 0);
+    }
+
+    if (rows) {
+      const rowsPerPage = headShow ? 10 : 6;
+      const calculatedPageCount = Math.ceil(rows.length / rowsPerPage);
+      setPageCount(calculatedPageCount);
+    }
+  }, [query, rows]);
+
+  const visibleRows = React.useMemo(() => {
+    if (!rows) return [];
+    return rows?.slice(page * showRow, page * showRow + showRow);
+  }, [page, showRow, rows]);
+
+  if (error) {
+    console.log(error);
+  }
+
+  if (isLoading) {
+    return "Loading.....";
+  }
 
   return (
     <>
@@ -100,17 +121,17 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                   paddingRight: { xs: "20px", md: "50px" },
                   paddingLeft: { xs: "20px", md: "50px" },
                   "&.MuiCardContent-root": {
-                    paddingBottom: "50px",
-                    paddingTop: "30px",
+                    paddingBottom: "32px",
+                    paddingTop: "37px",
                   },
                 }
               : {
                   "&.MuiCardContent-root": {
-                    paddingBottom: "35px",
-                    paddingTop: "30px",
+                    paddingBottom: "42px",
+                    paddingTop: "34px",
                   },
-                  paddingRight: { xs: "20px", md: "30px" },
-                  paddingLeft: { xs: "20px", md: "30px" },
+                  paddingRight: { xs: "20px", md: "40px" },
+                  paddingLeft: { xs: "20px", md: "40px" },
                 }
           }
         >
@@ -127,10 +148,10 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                         fontSize: "20px",
                         fontWeight: "700",
                       },
-                      "& th:nth-child(3)": {
+                      "& th:nth-of-type(3)": {
                         display: { xs: "none", sm: "table-cell" },
                       },
-                      "& th:nth-child(4)": {
+                      "& th:nth-of-type(4)": {
                         display: { xs: "none", sm: "table-cell" },
                       },
                       "& th:last-child": {
@@ -162,32 +183,36 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                   ></TableCell>
                 </TableRow>
               )}
-              {visibleRows.map((row) => (
+              {visibleRows!.map((row, index) => (
                 <TableRow
-                  key={row.name}
+                  key={index}
                   sx={{
                     "& td, & th": {
                       p: 0,
-                      py: "9px",
+                      pb: !headShow ? "18px" : "10px",
+                      pt: !headShow ? 0 : "10px",
                       borderBottom: headShow ? "solid 1px #DCDCDC" : 0,
                     },
-                    "& td:first-child": {
+                    "& td:first-of-type": {
                       width: {
                         xs: "70%",
                         sm: "50%",
-                        md: headShow ? "60%" : "50%",
+                        md: headShow ? "70%" : "52%",
                       },
                     },
                     "& td:last-child": {
-                      width: { xs: "auto", sm: "5%" },
-                      p: "10px 0",
+                      width: { xs: "auto", sm: !headShow ? "10%" : "auto" },
+                      pb: !headShow ? "18px" : "",
                     },
-                    "& td:nth-child(3)": {
+
+                    "& td:nth-of-type(3)": {
                       display: { xs: "none", sm: "table-cell" },
+                      width: !headShow ? "18%" : "auto",
                     },
 
                     "&:last-child td": {
                       borderBottom: "none",
+                      p: !headShow ? 0 : "auto",
                     },
                   }}
                 >
@@ -199,7 +224,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                         opacity: ".8",
                       }}
                     >
-                      {row.name}
+                      {row.contact}
                     </Typography>
                     <Typography
                       noWrap
@@ -211,7 +236,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                         opacity: ".6",
                       }}
                     >
-                      {row.date}
+                      {new Date(row.timestamp).toISOString().split("T")[0]}{" "}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
@@ -225,7 +250,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                         opacity: ".6",
                       }}
                     >
-                      {row.date}
+                      {new Date(row.timestamp).toISOString().split("T")[0]}
                     </Typography>
 
                     <Box sx={{ display: { xs: "block", sm: "none" } }}>
@@ -249,7 +274,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                           noWrap
                           sx={{ color: "#000", opacity: ".4" }}
                         >
-                          {row.status}
+                          {row.action}
                         </Typography>
                       </Box>
                       <Button
@@ -263,7 +288,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                           fontWeight: "400",
                         }}
                       >
-                        {row.admin}
+                        {row.by}
                       </Button>
                     </Box>
                   </TableCell>
@@ -279,12 +304,12 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                           height: "10px",
                           width: "10px",
                           borderRadius: "50%",
-                          background: getStatusColor(row.status),
+                          background: getStatusColor(row.action),
                           mr: "8px",
                         }}
                       ></Box>
                       <Typography noWrap sx={{ color: "#000", opacity: ".4" }}>
-                        {row.status}
+                        {row.action}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -292,19 +317,22 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                     sx={{ display: { xs: "none", sm: "table-cell" } }}
                     align="left"
                   >
-                    <Button
-                      size="small"
+                    <Box
                       sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                         background: "#EEEEEE",
                         color: "#000",
                         height: "20px",
                         borderRadius: "2px",
                         textTransform: "capitalize",
                         fontWeight: "400",
+                        width: "100%",
                       }}
                     >
-                      {row.admin}
-                    </Button>
+                      {row.by}
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
@@ -314,38 +342,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
       </Card>
       {headShow && (
         <Box sx={{ display: "flex", justifyContent: "end", marginTop: "20px" }}>
-          <Pagination
-            count={pageCount}
-            color="primary"
-            sx={{ background: "#fff" }}
-            onChange={(event, value) => {
-              setPage(value - 1);
-            }}
-            renderItem={(item) => (
-              <PaginationItem
-                {...item}
-                components={{
-                  previous: () => <Box sx={{ color: "#4E73DF" }}>Previous</Box>,
-                  next: () => <Box sx={{ color: "#4E73DF" }}>Next</Box>,
-                }}
-                sx={{
-                  "&.MuiButtonBase-root": {
-                    borderRadius: 0,
-                    border: "solid 1px #DEE2E6",
-                    margin: 0,
-                    fontSize: "18px",
-                    padding: "20px",
-                  },
-                  "& .MuiPaginationItem-previousNext": {
-                    backgroundColor: "#DC3545",
-                    color: "white",
-                    borderRadius: "0px",
-                    fontSize: "18px",
-                  },
-                }}
-              />
-            )}
-          />
+          <PaginationComponent pageCount={pageCount} setPage={setPage} />
         </Box>
       )}
     </>

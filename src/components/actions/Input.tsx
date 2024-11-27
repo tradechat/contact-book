@@ -43,20 +43,21 @@ const Input: React.FC<InputProps> = ({
           borderRadius: "5px",
           fontSize: "20px",
           fontWeight: "400",
+          minHeight: "48px",
         },
         "& .MuiOutlinedInput-root": {
           "& fieldset": {
             borderColor: "#E0E0E0",
             color: "#868E96",
-            p: "10px",
           },
         },
+
         "& label.Mui-focused": {
           color: "#A0AAB4",
         },
         "& .MuiFormHelperText-root": {
           position: "absolute",
-          bottom: "-24px",
+          bottom: "-26px",
           m: 0,
         },
       }}
