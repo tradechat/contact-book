@@ -5,9 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "install": "npm install"
+    "start": "next start"
   },
   "dependencies": {
     "@emotion/cache": "^11.13.1",
