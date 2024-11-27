@@ -286,7 +286,7 @@ const UserForm = ({ mode, user }: UserFormProps) => {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     value={formData.role}
-                    placeholder="Select user type"
+                    // placeholder="Select user type"
                     name="type"
                     onChange={handleChange}
                   >
