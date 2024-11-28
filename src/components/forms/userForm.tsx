@@ -91,6 +91,8 @@ const UserForm = ({ mode, user }: UserFormProps) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -300,7 +302,7 @@ const UserForm = ({ mode, user }: UserFormProps) => {
                     id="demo-simple-select"
                     value={formData.role}
                     // placeholder="Select user type"
-                    name="type"
+                    name="role"
                     onChange={(e) => {
                       handleChange(e as React.ChangeEvent<HTMLInputElement>);
                     }}
