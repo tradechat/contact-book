@@ -17,8 +17,10 @@ import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { register } from "@/services/apiService";
+import { AxiosError } from "axios";
+import { RegisterData } from "@/models/registerData";
 const Register = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RegisterData>({
     firstName: "",
     lastName: "",
     email: "",
@@ -51,20 +53,17 @@ const Register = () => {
 
   const mutation = useMutation({
     mutationFn: () => register(formData),
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       if (error.response) {
-        console.log(error.response);
-
-        if (error.response.status == 403) {
+        const { response } = error;
+        if (response.status === 403) {
           setIsErrorMsg((prevErrors) => [
             ...prevErrors,
             "Email already exists",
           ]);
         }
-        if (error.response.data.errors) {
-          for (const [key, messages] of Object.entries(
-            error.response.data.errors
-          )) {
+        if (response.data.errors) {
+          for (const [, messages] of Object.entries(response.data.errors)) {
             (messages as string[]).forEach((message) => {
               setIsErrorMsg((prevErrors) => [...prevErrors, message]);
             });
@@ -454,3 +453,8 @@ const Register = () => {
 };
 
 export default Register;
+
+export interface ErrorResponse {
+  status: number;
+  errors: Record<string, string[]>;
+}

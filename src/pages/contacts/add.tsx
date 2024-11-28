@@ -2,7 +2,7 @@ import ContactForm from "@/components/forms/contactForm";
 import { Contact } from "@/models/contact";
 
 const AddContact = () => {
-  let contact: Contact = {
+  const contact: Contact = {
     id: 0,
     firstName: "",
     lastName: "",

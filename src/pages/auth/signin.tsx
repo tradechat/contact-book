@@ -16,7 +16,9 @@ import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 import { setCookie } from "cookies-next/client";
 import { login } from "@/services/apiService";
-
+import { AxiosError } from "axios";
+import { ErrorResponse } from "./register";
+import Image from "next/image";
 const SignIn = () => {
   const [isErrorMsg, setIsErrorMsg] = useState<Array<string>>([]);
   const [openSnackbars, setopenSnackbars] = React.useState(false);
@@ -42,7 +44,7 @@ const SignIn = () => {
     mutationFn: () => {
       return login(formData);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       if (error.response) {
         if (error.response.status == 401) {
           setIsErrorMsg((prevErrors) => [
@@ -51,7 +53,7 @@ const SignIn = () => {
           ]);
         }
         if (error.response.data.errors) {
-          for (const [key, messages] of Object.entries(
+          for (const [, messages] of Object.entries(
             error.response.data.errors
           )) {
             (messages as string[]).forEach((message) => {
@@ -127,10 +129,12 @@ const SignIn = () => {
             Sign In
           </Typography>
           <Box sx={{ width: "100%", display: { xs: "block", md: "none" } }}>
-            <img
+            <Image
               style={{ margin: "auto", marginBottom: "60px", display: "block" }}
               src="/images/Logo_Vertical.svg"
               alt=""
+              width="200"
+              height="300"
             />
           </Box>
           <Input
@@ -228,14 +232,14 @@ const SignIn = () => {
               }}
             ></Box>
             <Typography
-              style={{
+              sx={{
                 color: "#212529",
                 fontSize: "15px",
                 textAlign: "center",
                 textDecorationColor: "#212529",
               }}
             >
-              Don't have account?
+              Don&apos;t have account?
             </Typography>
             <Box
               sx={{

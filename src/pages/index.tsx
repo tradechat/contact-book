@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
   };
 };
 
-const Home: React.FC<HomeProps> = ({ userData }) => {
+const Home: React.FC<HomeProps> = () => {
   return <HomePage></HomePage>;
 };
 

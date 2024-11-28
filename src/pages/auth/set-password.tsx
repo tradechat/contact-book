@@ -5,6 +5,8 @@ import PasswordInput from "@/components/actions/passwordInput";
 import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 import { setPassword } from "@/services/apiService";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "./register";
 const SetPassword = () => {
   const [isPassword, setIsPassword] = useState("");
   const [isConfirmPassword, setIsConfirmPassword] = useState("");
@@ -13,6 +15,8 @@ const SetPassword = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const router = useRouter();
   const { id, code } = router.query;
+  const idNumber = id ? Number(id) : 0;
+  const codeString = Array.isArray(code) ? code[0] : code;
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -20,16 +24,16 @@ const SetPassword = () => {
         {
           password: isPassword,
         },
-        id,
-        code
+        idNumber!,
+        codeString!
       ),
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       if (error.response) {
         if (error.response.status == 404) {
-          setIsErrorMsg((prevErrors) => [...prevErrors, error.response.data]);
+          setIsErrorMsg((prevErrors) => [...prevErrors, error.message]);
         }
         if (error.response.data.errors) {
-          for (const [key, messages] of Object.entries(
+          for (const [, messages] of Object.entries(
             error.response.data.errors
           )) {
             (messages as string[]).forEach((message) => {

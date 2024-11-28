@@ -21,6 +21,7 @@ import BackButtom from "../actions/backButton";
 import FormActionsButton from "../actions/formActionsButton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser, updateUser } from "@/services/apiService";
+import { AxiosError } from "axios";
 
 interface UserFormProps {
   mode: string;
@@ -40,14 +41,15 @@ const UserForm = ({ mode, user }: UserFormProps) => {
   const queryClient = useQueryClient();
   const { id } = router.query;
 
-  const mutation = useMutation<User>({
+  const mutation = useMutation<User, AxiosError>({
     mutationFn: () =>
       mode == "add" ? createUser(formData) : updateUser(formData),
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       console.log(error);
-      if (error.response) {
-        if (error.response.status == 400) {
-          setIsErrorMsg((prevErrors) => [...prevErrors, error.response.data]);
+      if (error.response && error.response.status === 400) {
+        const responseData = error.response.data;
+        if (typeof responseData === "string") {
+          setIsErrorMsg((prevErrors) => [...prevErrors, responseData]);
         }
       }
     },
@@ -78,7 +80,7 @@ const UserForm = ({ mode, user }: UserFormProps) => {
     mutation.mutate();
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -288,7 +290,9 @@ const UserForm = ({ mode, user }: UserFormProps) => {
                     value={formData.role}
                     // placeholder="Select user type"
                     name="type"
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e as React.ChangeEvent<HTMLInputElement>);
+                    }}
                   >
                     <MenuItem value={"Owner"}>Owner</MenuItem>
                     <MenuItem value={"Admin"}>Admin</MenuItem>

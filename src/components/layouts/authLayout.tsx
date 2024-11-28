@@ -3,8 +3,8 @@ import Grid, { GridSize } from "@mui/material/Grid2";
 import { Box, Typography } from "@mui/material";
 interface AuthLayoutProps {
   children: ReactNode;
-  imageSize: Number;
-  formSize: Number;
+  imageSize: GridSize;
+  formSize: GridSize;
 }
 
 const AuthLayout = ({ children, imageSize, formSize }: AuthLayoutProps) => {

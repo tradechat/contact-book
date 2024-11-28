@@ -12,7 +12,7 @@ import Paths from "@/components/layouts/paths";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import { Button, FormControl, OutlinedInput, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { User } from "@/models/user";
+import { HeadCell, User } from "@/models/user";
 import UserStatusBox from "../actions/userStatusBox";
 import PaginationComponent from "../actions/paginationComponent";
 import UserCard from "../userCard";
@@ -43,6 +43,7 @@ export default function UsersTable() {
   });
 
   useEffect(() => {
+    setSearchTerm("");
     if (query.page) {
       const pageNumber = parseInt(query.page as string, 10) - 1;
       setPage(pageNumber >= 0 ? pageNumber : 0);
@@ -65,14 +66,16 @@ export default function UsersTable() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows!.map((n: any) => n.id);
+      const newSelected = rows!
+        .map((n: User) => (typeof n.id === "number" ? n.id : NaN))
+        .filter((id) => !isNaN(id));
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+  const handleClick = (id: number) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
     if (selectedIndex === -1) {
@@ -212,7 +215,7 @@ export default function UsersTable() {
                     }}
                   />
                 </TableCell>
-                {headCells.map((headCell: any, index: number) => (
+                {headCells.map((headCell: HeadCell, index: number) => (
                   <TableCell
                     key={index}
                     align={headCell.align ?? "left"}
@@ -241,7 +244,7 @@ export default function UsersTable() {
                     <TableCell>
                       <Checkbox
                         color="primary"
-                        onClick={(event) => handleClick(event, index)}
+                        onClick={() => handleClick(index)}
                         checked={isItemSelected}
                         inputProps={{
                           "aria-labelledby": labelId,
@@ -320,6 +323,7 @@ export default function UsersTable() {
                 handleClick={handleClick}
                 labelId={labelId}
                 key={row.id}
+                index={index}
               />
             );
           })}

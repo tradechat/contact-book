@@ -1,4 +1,3 @@
-import Paths from "@/components/layouts/paths";
 import { Box, Card, CardContent, CardHeader, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Input from "@/components/actions/Input";
@@ -24,7 +23,7 @@ const CompanyForm = ({ company, mode }: CompanyFormProps) => {
   const router = useRouter();
   const labelStyle = { fontSize: "18px", fontWeight: "400" };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -44,7 +43,6 @@ const CompanyForm = ({ company, mode }: CompanyFormProps) => {
   const mutation = useMutation({
     mutationFn: () => updateCompany(formData),
     mutationKey: ["company"],
-    onError: (error: any) => {},
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ["company"],

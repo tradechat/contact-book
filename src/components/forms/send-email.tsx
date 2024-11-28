@@ -6,23 +6,27 @@ import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 import { sendEmail } from "@/services/apiService";
 import Paths from "../layouts/paths";
+import { EmailData } from "@/models/email";
 
 const SendEmailForm = () => {
   const router = useRouter();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { email } = router.query;
-  const [formData, setFormData] = useState({
-    to: email,
+  const [formData, setFormData] = useState<EmailData>({
+    to: "",
     subject: "",
     body: "",
     cc: "",
     bcc: "",
   });
 
-  console.log(email);
-
   useEffect(() => {
-    setFormData({ ...formData, to: email });
+    if (typeof email === "string") {
+      setFormData((prevData) => ({
+        ...prevData,
+        to: email,
+      }));
+    }
   }, [email]);
 
   const mutation = useMutation({
@@ -30,7 +34,7 @@ const SendEmailForm = () => {
     onError: (error) => {
       console.log(error);
     },
-    onSuccess: (data) => {},
+    onSuccess: () => {},
   });
 
   const handleChange = (

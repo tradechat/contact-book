@@ -56,7 +56,7 @@ const Navbar = () => {
     setAnchorEl(null);
   };
 
-  const { data } = useQuery<User>({
+  const { data: user } = useQuery<User>({
     queryKey: ["user"],
     queryFn: getCurrentUser,
   });
@@ -121,7 +121,7 @@ const Navbar = () => {
                 </Link>
               ))}
             </Box>
-            {data && (
+            {user && (
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <Button
                   id="demo-positioned-button"
@@ -133,7 +133,7 @@ const Navbar = () => {
                 >
                   <Box sx={{ display: "flex", alignItems: "center" }}>
                     <PersonIcon sx={{ fontSize: "26px", mr: 1 }} />
-                    <Typography>{data?.firstName}</Typography>
+                    <Typography>{user?.firstName}</Typography>
                   </Box>
                 </Button>
                 <Menu
@@ -161,7 +161,7 @@ const Navbar = () => {
                 >
                   <MenuItem onClick={handleClose}>
                     <Link
-                      href={`/users/view`}
+                      href={`/users/view/${user.id}`}
                       style={{ textDecoration: "none", color: "#212529" }}
                     >
                       My Profile
@@ -190,8 +190,8 @@ const Navbar = () => {
       >
         <DrawerComponent
           pages={pages}
-          userName={data?.firstName!}
-          userId={data?.id!}
+          userName={user?.firstName || "UserName"}
+          userId={user?.id || ""}
           userProfileOpen={userProfileOpen}
           handleDrawerToggle={handleDrawerToggle}
           handleUserProfileClick={handleUserProfileClick}

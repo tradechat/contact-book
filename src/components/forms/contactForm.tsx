@@ -22,6 +22,7 @@ import BackButtom from "../actions/backButton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createContact, updateContact } from "@/services/apiService";
 import ProfileImage from "../profileImage";
+import { AxiosError } from "axios";
 
 interface ContactFormProps {
   mode: string;
@@ -69,17 +70,20 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
     });
   };
 
-  const mutation = useMutation<Contact>({
+  const mutation = useMutation<Contact, AxiosError>({
     mutationFn: () =>
       mode == "add" ? createContact(formData) : updateContact(formData),
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       if (error.response) {
-        if (error.response.status == 400) {
-          setIsErrorMsg((prevErrors) => [...prevErrors, error.response.data]);
+        if (error.response && error.response.status === 400) {
+          const responseData = error.response.data;
+          if (typeof responseData === "string") {
+            setIsErrorMsg((prevErrors) => [...prevErrors, responseData]);
+          }
         }
       }
     },
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ["contact", id],
       });
@@ -90,7 +94,7 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = () => {
     if (mode == "view") {
       return router.replace(`/contacts/edite/${id}`);
     }
@@ -192,7 +196,7 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
             component="form"
             onSubmit={(e) => {
               e.preventDefault();
-              handleSubmit(e);
+              handleSubmit();
             }}
           >
             <Grid container spacing="25px">

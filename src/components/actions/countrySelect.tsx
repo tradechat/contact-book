@@ -2,6 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
+import Image from "next/image";
 
 interface CountrySelectProps {
   onChange: (value: string) => void;
@@ -59,12 +60,13 @@ export default function CountrySelect({
             sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
             {...optionProps}
           >
-            <img
+            <Image
               loading="lazy"
-              width="20"
-              srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+              width={20}
+              height={20}
               src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-              alt=""
+              alt={`Flag of ${option.code}`}
+              sizes="(max-width: 768px) 20px, (max-width: 1200px) 20px, 20px"
             />
             {option.label} ({option.code}) +{option.phone}
           </Box>
@@ -93,13 +95,14 @@ export default function CountrySelect({
           }}
           onInvalid={(event) => {
             event.preventDefault();
-            setIsSubmitted;
+            setIsSubmitted();
           }}
         />
       )}
     />
   );
 }
+
 interface CountryType {
   code: string;
   label: string;

@@ -1,4 +1,3 @@
-import { Divider, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import StatisticalBox from "./actions/statisticalBox";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";

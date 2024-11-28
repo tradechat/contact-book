@@ -12,12 +12,10 @@ import { User } from "@/models/user";
 
 interface UserCardProps {
   user: User;
-  handleClick: (
-    event: React.MouseEvent<HTMLButtonElement>,
-    userId: number
-  ) => void;
+  handleClick: (userId: number) => void;
   labelId: string;
   isItemSelected: boolean;
+  index: number;
 }
 
 const UserCard = ({
@@ -25,6 +23,7 @@ const UserCard = ({
   handleClick,
   labelId,
   isItemSelected,
+  index,
 }: UserCardProps) => {
   return (
     <Card
@@ -48,7 +47,7 @@ const UserCard = ({
             <Checkbox
               sx={{ position: "relative", zIndex: "999" }}
               color="primary"
-              onClick={(event) => handleClick(event, user.id)}
+              onClick={() => handleClick(index)}
               checked={isItemSelected}
               inputProps={{
                 "aria-labelledby": labelId,
@@ -139,7 +138,7 @@ const UserCard = ({
               color: "#808080",
             }}
           >
-            {user.phone}
+            {user.phoneNumber}
           </Typography>
         </Box>
       </CardContent>

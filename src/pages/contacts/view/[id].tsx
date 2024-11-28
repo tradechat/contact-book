@@ -7,9 +7,11 @@ import { useRouter } from "next/router";
 const ViewContact = () => {
   const router = useRouter();
   const { id } = router.query;
+  const idNumber = typeof id === "string" ? Number(id) : undefined;
+
   const { isLoading, error, data } = useQuery<Contact>({
     queryKey: ["contact", id],
-    queryFn: () => getContact(id),
+    queryFn: () => getContact(idNumber!),
     refetchOnReconnect: true,
     refetchOnMount: true,
   });

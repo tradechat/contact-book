@@ -17,6 +17,7 @@ import PaginationComponent from "../actions/paginationComponent";
 import { useQuery } from "@tanstack/react-query";
 import { getActivities } from "@/services/apiService";
 import { useRouter } from "next/router";
+import { Activity } from "@/models/activity";
 
 interface LatestActivitiesTableProps {
   headShow: boolean;
@@ -40,7 +41,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
     isLoading,
     error,
     data: rows,
-  } = useQuery<Array<any>>({
+  } = useQuery<Activity[]>({
     queryKey: ["activities"],
     queryFn: getActivities,
     refetchOnReconnect: true,
@@ -64,7 +65,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
       const calculatedPageCount = Math.ceil(rows.length / rowsPerPage);
       setPageCount(calculatedPageCount);
     }
-  }, [query, rows]);
+  }, [query, rows, headShow]);
 
   const visibleRows = React.useMemo(() => {
     if (!rows) return [];
@@ -266,7 +267,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                             height: "10px",
                             width: "10px",
                             borderRadius: "50%",
-                            background: getStatusColor(row.status),
+                            background: getStatusColor(row.status!),
                             mr: "8px",
                           }}
                         ></Box>

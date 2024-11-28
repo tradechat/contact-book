@@ -3,7 +3,6 @@ import Paths from "@/components/layouts/paths";
 import { Company } from "@/models/company";
 import { getCompany } from "@/services/apiService";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/router";
 
 const CompanyProfile = () => {
   const {

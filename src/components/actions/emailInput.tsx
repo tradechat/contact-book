@@ -1,4 +1,4 @@
-import { MenuItem, TextField, TextFieldProps } from "@mui/material";
+import { TextField, TextFieldProps } from "@mui/material";
 import React from "react";
 
 type InputProps = TextFieldProps & {
@@ -9,7 +9,7 @@ type InputProps = TextFieldProps & {
   helperText?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string;
-  style?: any;
+  style?: React.CSSProperties;
 };
 
 const EmilaInput: React.FC<InputProps> = ({

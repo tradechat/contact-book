@@ -1,11 +1,13 @@
 import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
-import React, { ReactElement, useState } from "react";
+import React, { useState } from "react";
 import AuthLayout from "@/components/layouts/authLayout";
 import Input from "@/components/actions/Input";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 import { resetPassword } from "@/services/apiService";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "./register";
 
 const ResetPassword = () => {
   const [isEmail, setIsEmail] = useState("");
@@ -23,13 +25,13 @@ const ResetPassword = () => {
     mutationFn: () => {
       return resetPassword({ email: isEmail });
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       if (error.response) {
         if (error.response.status == 404) {
-          setIsErrorMsg((prevErrors) => [...prevErrors, error.response.data]);
+          setIsErrorMsg((prevErrors) => [...prevErrors, error.message]);
         }
         if (error.response.data.errors) {
-          for (const [key, messages] of Object.entries(
+          for (const [, messages] of Object.entries(
             error.response.data.errors
           )) {
             (messages as string[]).forEach((message) => {

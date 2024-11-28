@@ -12,7 +12,7 @@ export interface Contact {
   addressTwo?: string;
   status?: string;
   action?: string;
-  imageUploadFile?: any;
+  imageUploadFile?: File | string;
 }
 
 export function createContact(

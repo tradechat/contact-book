@@ -15,7 +15,7 @@ export const LightTooltip = styled(
       classes={{ popper: className }}
     />
   )
-)(({ theme }) => ({
+)(() => ({
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: "#ffffff00",
     color: "#000",

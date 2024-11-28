@@ -9,7 +9,12 @@ const ViewUser = () => {
   const { id } = router.query;
   const { isLoading, error, data } = useQuery<User>({
     queryKey: ["user", id],
-    queryFn: () => getUser(id?.toString()!),
+    queryFn: () => {
+      if (!id) {
+        throw new Error("User ID is required");
+      }
+      return getUser(id.toString());
+    },
   });
 
   if (isLoading) return <div>Loading...</div>;
