@@ -106,7 +106,7 @@ const SendEmailForm = () => {
           disableElevation
           type="submit"
         >
-          Send Email
+          {mutation.isPending ? "Loading..." : "  Send Email"}
         </Button>
       </Box>
       <Paper elevation={0} sx={{ px: "50px", py: "39px" }}>

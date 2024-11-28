@@ -33,7 +33,9 @@ const UserForm = ({ mode, user }: UserFormProps) => {
 
   const [formData, setFormData] = useState<User>(user);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(
+    user.status == "Locked" ? false : true
+  );
   const [isErrorMsg, setIsErrorMsg] = useState<Array<string>>([]);
   const [openSnackbars, setopenSnackbars] = useState(false);
   const router = useRouter();
@@ -67,6 +69,12 @@ const UserForm = ({ mode, user }: UserFormProps) => {
   });
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      formData.status = "Active";
+    } else {
+      formData.status = "Locked";
+    }
+
     setIsChecked(event.target.checked);
   };
 
@@ -74,6 +82,8 @@ const UserForm = ({ mode, user }: UserFormProps) => {
     if (mode == "view") {
       return router.push(`/users/edite/${id}`);
     }
+    console.log(formData);
+
     setIsSubmitted(true);
     setopenSnackbars(true);
     setIsErrorMsg([]);
@@ -139,6 +149,7 @@ const UserForm = ({ mode, user }: UserFormProps) => {
                 >
                   <Typography> {isChecked ? "Locked" : "Unlocked"} </Typography>
                   <LockedSwitch
+                    disabled={mode == "view"}
                     checked={isChecked}
                     onChange={handleSwitchChange}
                   />

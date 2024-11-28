@@ -18,8 +18,8 @@ import PaginationComponent from "../actions/paginationComponent";
 import UserCard from "../userCard";
 import { LightTooltip } from "../actions/copyToolTip";
 import { headCells } from "@/models/user";
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "@/services/apiService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deletUsers, getUsers } from "@/services/apiService";
 import { useEffect, useMemo, useState } from "react";
 
 export default function UsersTable() {
@@ -29,7 +29,7 @@ export default function UsersTable() {
   const [pageCount, setPageCount] = useState(0);
   const columStyle = { fontSize: "20px", fontWeight: "400" };
   const router = useRouter();
-
+  const queryClient = useQueryClient();
   const { query } = router;
   const {
     isLoading,
@@ -40,6 +40,23 @@ export default function UsersTable() {
     queryFn: getUsers,
     refetchOnReconnect: true,
     refetchOnMount: true,
+  });
+
+  const mutation = useMutation({
+    mutationFn: () => {
+      const userIds = selected
+        .map((index) => rows?.[index]?.id)
+        .filter((id): id is string => id !== undefined);
+      return deletUsers(userIds);
+    },
+    mutationKey: ["users"],
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["users"] });
+      setSearchTerm("");
+    },
   });
 
   useEffect(() => {
@@ -66,9 +83,7 @@ export default function UsersTable() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows!
-        .map((n: User) => (typeof n.id === "number" ? n.id : NaN))
-        .filter((id) => !isNaN(id));
+      const newSelected = rows!.map((_, index) => index);
       setSelected(newSelected);
       return;
     }
@@ -144,7 +159,12 @@ export default function UsersTable() {
             background: "#fff",
           }}
         >
-          <OutlinedInput placeholder="Search" />
+          <OutlinedInput
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+            }}
+            placeholder="Search"
+          />
         </FormControl>
         <Box
           sx={{
@@ -164,8 +184,11 @@ export default function UsersTable() {
             }}
             variant="contained"
             disableElevation
+            onClick={() => {
+              mutation.mutate();
+            }}
           >
-            Delete
+            {mutation.isPending ? "Loading..." : "  Delete"}
           </Button>
 
           <Button
@@ -277,7 +300,11 @@ export default function UsersTable() {
                         <Typography noWrap sx={{ ...columStyle }}>
                           {row.email}
                         </Typography>
-                        <LightTooltip title="Copy" placement="top">
+                        <LightTooltip
+                          email={row.email}
+                          title="Copy"
+                          placement="top"
+                        >
                           <FileCopyOutlinedIcon></FileCopyOutlinedIcon>
                         </LightTooltip>
                       </Box>

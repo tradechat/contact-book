@@ -32,7 +32,9 @@ interface ContactFormProps {
 const ContactForm = ({ mode, contact }: ContactFormProps) => {
   const [formData, setFormData] = useState<Contact>(contact);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(
+    contact.status == "Active" ? true : false
+  );
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isErrorMsg, setIsErrorMsg] = useState<Array<string>>([]);
   const [openSnackbars, setopenSnackbars] = useState(false);
@@ -57,6 +59,12 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
   };
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      formData.status = "Active";
+    } else {
+      formData.status = "Inactive";
+    }
+
     setIsChecked(event.target.checked);
   };
 
@@ -170,6 +178,7 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
                 >
                   <Typography> {isChecked ? "Locked" : "Unlocked"} </Typography>
                   <LockedSwitch
+                    disabled={mode == "view"}
                     checked={isChecked}
                     onChange={handleSwitchChange}
                   />

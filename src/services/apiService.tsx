@@ -103,6 +103,10 @@ export const createUser = async (data: User): Promise<User> => {
   return axiosInstance.post("/users", data);
 };
 
-export const updateUser = async (data: User): Promise<User> => {
+export const updateUser = async (data: any): Promise<User> => {
   return axiosInstance.put(`/users/${data.id}`, data);
+};
+
+export const deletUsers = async (data: readonly string[]) => {
+  return axiosInstance.delete(`/users`, { data: data });
 };

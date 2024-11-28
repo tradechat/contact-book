@@ -175,6 +175,7 @@ export default function ContactsTable() {
         handleCreateNew={handleCreateNew}
         handleOpenMenu={handleOpenMenu}
         handleCloseMenu={handleCloseMenu}
+        deletePendding={mutation.isPending}
         setSearchTerm={(value) => {
           setSearchTerm(value);
         }}

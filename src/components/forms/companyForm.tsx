@@ -47,6 +47,7 @@ const CompanyForm = ({ company, mode }: CompanyFormProps) => {
       await queryClient.invalidateQueries({
         queryKey: ["company"],
       });
+      router.push("/");
     },
   });
 

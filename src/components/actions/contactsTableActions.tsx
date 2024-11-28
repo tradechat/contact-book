@@ -20,6 +20,7 @@ interface ActionsBoxProps {
   handleCloseMenu: () => void;
   setSearchTerm: (e: string) => void;
   sendEmail: () => void;
+  deletePendding: boolean;
 }
 
 const ActionsBox: React.FC<ActionsBoxProps> = ({
@@ -32,6 +33,7 @@ const ActionsBox: React.FC<ActionsBoxProps> = ({
   onDelete,
   setSearchTerm,
   sendEmail,
+  deletePendding,
 }) => {
   const buttonSize = {
     textTransform: "capitalize",
@@ -84,7 +86,7 @@ const ActionsBox: React.FC<ActionsBoxProps> = ({
             disableElevation
             onClick={onDelete}
           >
-            Delete
+            {deletePendding ? "Loading.." : "Delele"}
           </Button>
           <Box sx={{ width: { xs: "48%", md: "120px", lg: "142px" } }}>
             <Button

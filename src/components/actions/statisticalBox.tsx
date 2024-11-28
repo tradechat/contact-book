@@ -8,7 +8,7 @@ interface StatisticalBoxProps {
   status: string;
   percentage: number;
   color: string;
-  Icon: OverridableComponent<SvgIconTypeMap<Record<string, never>, "svg">>;
+  Icon: React.ElementType;
 }
 
 const StatisticalBox = ({
@@ -16,6 +16,7 @@ const StatisticalBox = ({
   status,
   percentage,
   color,
+  Icon,
 }: StatisticalBoxProps) => {
   return (
     <Grid size={{ xs: 12, md: 6 }}>
@@ -86,7 +87,7 @@ const StatisticalBox = ({
                 alignItems: "center",
               }}
             >
-              {/* <Icon sx={{ color: color, fontSize: "30px" }}></Icon> */}
+              <Icon sx={{ color: color, fontSize: "30px" }}></Icon>
             </Box>
           </Grid>
         </Grid>

@@ -60,28 +60,28 @@ const HomePage = () => {
           <StatisticalBox
             count={activeContactsCount}
             status="Active"
-            percentage={3} // يمكن تحديثها بما يتناسب مع البيانات
+            percentage={3}
             Icon={ArrowUpwardIcon}
             color="#1ABC9C"
           ></StatisticalBox>
           <StatisticalBox
             count={inactiveContactsCount}
             status="Inactive"
-            percentage={3} // يمكن تحديثها بما يتناسب مع البيانات
+            percentage={3}
             Icon={ArrowDownwardIcon}
             color="#FC766A"
           ></StatisticalBox>
           <StatisticalBox
             count={withEmailCount}
             status="With email"
-            percentage={3} // يمكن تحديثها بما يتناسب مع البيانات
+            percentage={3}
             Icon={EmailIcon}
             color="#2C3E50"
           ></StatisticalBox>
           <StatisticalBox
             count={withoutEmailCount}
             status="Without email"
-            percentage={3} // يمكن تحديثها بما يتناسب مع البيانات
+            percentage={3}
             Icon={CloseIcon}
             color="#5B84B1"
           ></StatisticalBox>
