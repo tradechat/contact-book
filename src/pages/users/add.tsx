@@ -13,6 +13,7 @@ const UserAction = () => {
     mobile: "",
     email2: "",
     role: "Admin",
+    status: "Pending",
   };
 
   return <UserForm user={user} mode="add" />;

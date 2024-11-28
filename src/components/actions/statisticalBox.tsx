@@ -1,6 +1,5 @@
-import { Box, SvgIconTypeMap, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { OverridableComponent } from "@mui/material/OverridableComponent";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 
 interface StatisticalBoxProps {
