@@ -62,7 +62,7 @@ export const resetPassword = async (data: { email: string }) => {
 
 export const setPassword = async (
   data: { password: string },
-  id: number,
+  id: string,
   code: string
 ) => {
   return axiosInstance.post(`/reset-password?id=${id}&code=${code}`, data);

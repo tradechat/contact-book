@@ -15,16 +15,15 @@ const SetPassword = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const router = useRouter();
   const { id, code } = router.query;
-  const idNumber = id ? Number(id) : 0;
+  const idString = Array.isArray(id) ? id[0] : id;
   const codeString = Array.isArray(code) ? code[0] : code;
-
   const mutation = useMutation({
     mutationFn: () =>
       setPassword(
         {
           password: isPassword,
         },
-        idNumber!,
+        idString!,
         codeString!
       ),
     onError: (error: AxiosError<ErrorResponse>) => {

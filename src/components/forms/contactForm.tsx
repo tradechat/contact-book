@@ -244,7 +244,7 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
                         <ProfileImage url={formData.imageUrl} />
                       ) : (
                         <Image
-                          src="/images/Person.png"
+                          src="/images/user.png"
                           width={200}
                           height={200}
                           alt="Default Profile"

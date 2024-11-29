@@ -286,29 +286,31 @@ export default function ContactsTable() {
                         />
                       </Button>
                     </TableCell>
-                    <TableCell align="left">
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          position: "relative",
-                          width: "58px",
-                          height: "58px",
-                        }}
-                      >
-                        {row.imageUrl ? (
-                          <ProfileImage url={row.imageUrl} />
-                        ) : (
-                          <Image
-                            src="/images/user.png"
-                            alt="profile"
-                            className="rounded-full"
-                            layout="fill"
-                            style={{ borderRadius: "50%" }}
-                            objectFit="cover"
-                          />
-                        )}
+                    <TableCell align="center">
+                      <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            position: "relative",
+                            width: "58px",
+                            height: "58px",
+                          }}
+                        >
+                          {row.imageUrl ? (
+                            <ProfileImage url={row.imageUrl} />
+                          ) : (
+                            <Image
+                              src="/images/user.png"
+                              alt="profile"
+                              className="rounded-full"
+                              layout="fill"
+                              style={{ borderRadius: "50%" }}
+                              objectFit="cover"
+                            />
+                          )}
+                        </Box>
                       </Box>
                     </TableCell>
                     <TableCell align="left">

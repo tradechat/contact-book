@@ -34,7 +34,7 @@ const UserForm = ({ mode, user }: UserFormProps) => {
   const [formData, setFormData] = useState<User>(user);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isChecked, setIsChecked] = useState(
-    user.status == "Locked" ? false : true
+    user.status == "Locked" || user.status == "Pending" ? false : true
   );
   const [isErrorMsg, setIsErrorMsg] = useState<Array<string>>([]);
   const [openSnackbars, setopenSnackbars] = useState(false);
