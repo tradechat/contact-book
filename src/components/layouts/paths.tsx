@@ -9,10 +9,21 @@ interface PathProps {
 const Paths = ({ name }: PathProps) => {
   const router = useRouter();
   const { asPath, query } = router;
+
+  // دالة للتحقق مما إذا كان الجزء يمثل معرفًا
+  const isIdentifier = (segment: string) => {
+    // استبعاد إذا كان UUID أو معرفًا طويلًا جدًا
+    return (
+      segment.length > 20 || // استبعاد النصوص الطويلة (مثل UUIDs)
+      /^[a-fA-F0-9-]{8,36}$/.test(segment) || // التحقق من UUIDs
+      /^[0-9]+$/.test(segment) // التحقق من الأرقام فقط
+    );
+  };
+
   const pathArray = asPath
     .split("?")[0]
     .split("/")
-    .filter((segment) => segment);
+    .filter((segment) => segment && !isIdentifier(segment)); // تجاهل المعرفات
 
   const generatePathLabel = (segment: string) => {
     if (segment === "contacts" && query.action === "export") {
@@ -25,6 +36,15 @@ const Paths = ({ name }: PathProps) => {
       }
       return name;
     }
+
+    if (segment === "view") {
+      return name;
+    }
+
+    if (segment === "edite") {
+      return name;
+    }
+
     if (segment === "user") {
       if (query.mode === "add") {
         return "Invite new user";
@@ -39,7 +59,7 @@ const Paths = ({ name }: PathProps) => {
       sx={{ pb: "20px", mb: "30px", borderBottom: "solid 1px #D9D9D9" }}
       aria-label="breadcrumb"
     >
-      {pathArray.length != 0 ? (
+      {pathArray.length !== 0 ? (
         <Link
           style={{ color: "#000000", fontSize: "24px", textDecoration: "none" }}
           href="/"
