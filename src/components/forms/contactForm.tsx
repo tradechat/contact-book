@@ -147,7 +147,7 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
             </Alert>
           </Snackbar>
         ))}
-      <Paths name={formData.firstName + formData.lastName}></Paths>
+      <Paths name={formData.firstName + " " + formData.lastName}></Paths>
       <Card
         sx={{
           "&.MuiCard-root": {
