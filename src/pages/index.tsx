@@ -1,4 +1,3 @@
-import { GetServerSideProps } from "next";
 import HomePage from "@/components/home";
 interface HomeProps {
   userData: {

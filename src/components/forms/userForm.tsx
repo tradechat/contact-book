@@ -58,16 +58,11 @@ const UserForm = ({ mode, user }: UserFormProps) => {
         }
       }
     },
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ["user", id],
       });
       return router.replace("/users");
-
-      // if (mode == "add") {
-      //   return router.replace("/users");
-      // }
-      // router.back();
     },
   });
 

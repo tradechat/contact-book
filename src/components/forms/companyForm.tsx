@@ -7,7 +7,6 @@ import Image from "next/image";
 import { Company } from "@/models/company";
 import CountrySelect from "../actions/countrySelect";
 import FormActionsButton from "../actions/formActionsButton";
-import BackButtom from "../actions/backButton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateCompany } from "@/services/apiService";
 import { useUser } from "@/userContext";
@@ -29,10 +28,6 @@ const CompanyForm = ({ company, mode }: CompanyFormProps) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleBack = () => {
-    router.back();
   };
 
   const handleSubmit = () => {
