@@ -66,7 +66,9 @@ const SignIn = () => {
     onSuccess: (data) => {
       console.log(data);
       const token = data.data.token;
+      const role = data.data.role;
       setCookie("token", token);
+      setCookie("role", role);
       userouter.push("/");
     },
   });
@@ -205,7 +207,7 @@ const SignIn = () => {
               textTransform: "none",
               marginBottom: "30px",
               borderRadius: "5px",
-              fontWeight: "300",
+              fontWeight: "400",
               background: "#4E73DF",
             }}
             variant="contained"
@@ -264,7 +266,7 @@ const SignIn = () => {
                   width: "147px",
                   textTransform: "capitalize",
                   fontSize: "20px",
-                  fontWeight: "300",
+                  fontWeight: "400",
                   borderColor: "#4E73DF",
                   color: "#4E73DF",
                 }}

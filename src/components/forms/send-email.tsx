@@ -57,7 +57,7 @@ const SendEmailForm = () => {
 
   const buttonSize = {
     textTransform: "capitalize",
-    fontWeight: "300",
+    fontWeight: "400",
     fontSize: "16px",
     width: {
       xs: "50%",

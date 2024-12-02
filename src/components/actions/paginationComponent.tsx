@@ -16,6 +16,7 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
 }) => {
   return (
     <Pagination
+      siblingCount={-1}
       count={pageCount}
       page={page}
       color="primary"

@@ -56,7 +56,7 @@ const FormActionsButton = ({ mode, handleClick }: FormActionsButtonProps) => {
         marginRight: "18px",
         textTransform: "capitalize",
         fontSize: "18px",
-        fontWeight: "300",
+        fontWeight: "400",
         maxWidth: "180px",
         width: "180px",
         color: mode == "view" ? "#4E73DF" : "#fff",

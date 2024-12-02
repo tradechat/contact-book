@@ -9,6 +9,8 @@ import Paths from "./layouts/paths";
 import { useQuery } from "@tanstack/react-query";
 import { Contact } from "@/models/contact";
 import { getContacts } from "@/services/apiService";
+import { useUser } from "@/userContext";
+import { UserType } from "@/models/userType";
 
 const HomePage = () => {
   const {
@@ -21,7 +23,8 @@ const HomePage = () => {
     refetchOnReconnect: true,
     refetchOnMount: true,
   });
-
+  const { userType } = useUser();
+  const isOwner = userType === UserType.OWNER || userType === UserType.ADMIN;
   const activeContactsCount =
     rows?.filter((contact) => contact.status === "Active").length || 0;
   const inactiveContactsCount =
@@ -55,7 +58,7 @@ const HomePage = () => {
         <Grid
           container
           spacing={{ xs: "30px", md: "30px", lg: "70px", xl: "70px" }}
-          size={{ xs: 12, md: 12, lg: 6, xl: 6 }}
+          size={{ xs: 12, md: 12, lg: isOwner ? 6 : 12, xl: isOwner ? 6 : 12 }}
         >
           <StatisticalBox
             count={activeContactsCount}
@@ -86,9 +89,11 @@ const HomePage = () => {
             color="#5B84B1"
           ></StatisticalBox>
         </Grid>
-        <Grid size={{ xs: 12, md: 12, lg: 6, xl: 6 }}>
-          <LatestActivitiesTable headShow={false} />
-        </Grid>
+        {isOwner && (
+          <Grid size={{ xs: 12, md: 12, lg: 6, xl: 6 }}>
+            <LatestActivitiesTable headShow={false} />
+          </Grid>
+        )}
       </Grid>
     </>
   );

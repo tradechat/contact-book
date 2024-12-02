@@ -33,7 +33,7 @@ const statusColors = [
 
 const getStatusColor = (status: string) => {
   const statusColor = statusColors.find((item) => item.status === status);
-  return statusColor ? statusColor.color : "#000";
+  return statusColor ? statusColor.color : "#eee";
 };
 
 const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
@@ -201,7 +201,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                         md: headShow ? "70%" : "52%",
                       },
                     },
-                    "& td:last-child": {
+                    "& td:last-of-type": {
                       width: { xs: "auto", sm: !headShow ? "10%" : "auto" },
                       pb: !headShow ? "18px" : "",
                     },
@@ -211,7 +211,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                       width: !headShow ? "18%" : "auto",
                     },
 
-                    "&:last-child td": {
+                    "&:last-of-type td": {
                       borderBottom: "none",
                       p: !headShow ? 0 : "auto",
                     },
@@ -267,7 +267,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
                             height: "10px",
                             width: "10px",
                             borderRadius: "50%",
-                            background: getStatusColor(row.status!),
+                            background: getStatusColor(row.action!),
                             mr: "8px",
                           }}
                         ></Box>

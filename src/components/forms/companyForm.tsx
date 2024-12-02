@@ -10,6 +10,8 @@ import FormActionsButton from "../actions/formActionsButton";
 import BackButtom from "../actions/backButton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateCompany } from "@/services/apiService";
+import { useUser } from "@/userContext";
+import { UserType } from "@/models/userType";
 
 interface CompanyFormProps {
   company: Company;
@@ -21,6 +23,8 @@ const CompanyForm = ({ company, mode }: CompanyFormProps) => {
   const [formData, setFormData] = useState<Company>(company);
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { userType } = useUser();
+  const isOwner = userType === UserType.OWNER;
   const labelStyle = { fontSize: "18px", fontWeight: "400" };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -297,10 +301,12 @@ const CompanyForm = ({ company, mode }: CompanyFormProps) => {
                       mt: "30px",
                     }}
                   >
-                    <FormActionsButton
-                      mode={mutation.isPending ? "loading" : mode}
-                    />
-                    <BackButtom handleBack={handleBack} />
+                    {isOwner && (
+                      <FormActionsButton
+                        mode={mutation.isPending ? "loading" : mode}
+                      />
+                    )}
+                    {/* <BackButtom handleBack={handleBack} /> */}
                   </Box>
                 </Grid>
               </Grid>

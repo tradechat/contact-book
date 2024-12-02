@@ -427,7 +427,7 @@ const Register = () => {
               marginBottom: "30px",
               marginTop: "40px",
               borderRadius: "5px",
-              fontWeight: "300",
+              fontWeight: "400",
               background: "#4E73DF",
             }}
             variant="contained"

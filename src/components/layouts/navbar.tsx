@@ -109,7 +109,7 @@ const Navbar = () => {
                 <Link
                   key={page.id}
                   style={{
-                    fontWeight: "300",
+                    fontWeight: "400",
                     textDecoration: "none",
                     color: "#fff",
                     opacity: page.path === router.pathname ? "1" : ".7",

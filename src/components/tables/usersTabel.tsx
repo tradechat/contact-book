@@ -21,12 +21,16 @@ import { headCells } from "@/models/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deletUsers, getUsers } from "@/services/apiService";
 import { useEffect, useMemo, useState } from "react";
+import { useUser } from "@/userContext";
+import { UserType } from "@/models/userType";
 
 export default function UsersTable() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [page, setPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
+  const { userType } = useUser();
+  const isOwner = userType === UserType.ADMIN || userType === UserType.OWNER;
   const columStyle = { fontSize: "20px", fontWeight: "400" };
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -126,7 +130,7 @@ export default function UsersTable() {
 
   const buttonSize = {
     textTransform: "capitalize",
-    fontWeight: "300",
+    fontWeight: "400",
     fontSize: "16px",
     " &.MuiButtonBase-root": { height: "40px" },
   };
@@ -176,33 +180,37 @@ export default function UsersTable() {
             gap: { xs: "7px", md: "25px" },
           }}
         >
-          <Button
-            sx={{
-              ...buttonSize,
-              background: "#DC3545",
-              width: { xs: "100%", md: "83px" },
-            }}
-            variant="contained"
-            disableElevation
-            onClick={() => {
-              mutation.mutate();
-            }}
-          >
-            {mutation.isPending ? "Loading..." : "  Delete"}
-          </Button>
+          {isOwner && (
+            <>
+              <Button
+                sx={{
+                  ...buttonSize,
+                  background: "#DC3545",
+                  width: { xs: "100%", md: "83px" },
+                }}
+                variant="contained"
+                disableElevation
+                onClick={() => {
+                  mutation.mutate();
+                }}
+              >
+                {mutation.isPending ? "Loading..." : "  Delete"}
+              </Button>
 
-          <Button
-            sx={{
-              ...buttonSize,
-              width: { xs: "100%", md: "200px" },
-              background: "#4E73DF",
-            }}
-            variant="contained"
-            disableElevation
-            onClick={handleCreateNew}
-          >
-            Invite New User
-          </Button>
+              <Button
+                sx={{
+                  ...buttonSize,
+                  width: { xs: "100%", md: "200px" },
+                  background: "#4E73DF",
+                }}
+                variant="contained"
+                disableElevation
+                onClick={handleCreateNew}
+              >
+                Invite New User
+              </Button>
+            </>
+          )}
         </Box>
       </Box>
       <Paper sx={{ width: "100%", mb: 2, mt: "18px" }} variant="outlined">
@@ -217,27 +225,35 @@ export default function UsersTable() {
             >
               <TableRow
                 sx={{
+                  "& td:first-of-type, & th:first-of-type": {
+                    pl: "25px",
+                  },
                   "& td, & th": {
                     fontSize: "19px",
-                    padding: "15px",
+                    p: "25px",
                   },
                 }}
               >
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    color="primary"
-                    indeterminate={
-                      selected.length > 0 && selected.length < rows!.length
-                    }
-                    checked={
-                      rows!.length > 0 && selected.length === rows!.length
-                    }
-                    onChange={handleSelectAllClick}
-                    inputProps={{
-                      "aria-label": "select all desserts",
-                    }}
-                  />
-                </TableCell>
+                {isOwner && (
+                  <TableCell>
+                    <Checkbox
+                      sx={{
+                        "&.MuiCheckbox-root": { p: 0 },
+                      }}
+                      color="primary"
+                      indeterminate={
+                        selected.length > 0 && selected.length < rows!.length
+                      }
+                      checked={
+                        rows!.length > 0 && selected.length === rows!.length
+                      }
+                      onChange={handleSelectAllClick}
+                      inputProps={{
+                        "aria-label": "select all desserts",
+                      }}
+                    />
+                  </TableCell>
+                )}
                 {headCells.map((headCell: HeadCell, index: number) => (
                   <TableCell
                     key={index}
@@ -249,7 +265,11 @@ export default function UsersTable() {
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody
+              sx={{
+                "& td, & th": { borderBottom: "solid 2px #DDE1E6" },
+              }}
+            >
               {visibleRows.map((row: User, index: number) => {
                 const isItemSelected = selected.includes(index);
                 const labelId = `enhanced-table-checkbox-${row.id}`;
@@ -257,23 +277,31 @@ export default function UsersTable() {
                   <TableRow
                     key={index}
                     sx={{
+                      "& td:first-of-type, & th:first-of-type": {
+                        pl: "25px",
+                      },
                       cursor: "pointer",
                       "& td, & th": {
                         fontSize: "19px",
-                        padding: "15px",
+                        p: "23px",
                       },
                     }}
                   >
-                    <TableCell>
-                      <Checkbox
-                        color="primary"
-                        onClick={() => handleClick(index)}
-                        checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId,
-                        }}
-                      />
-                    </TableCell>
+                    {isOwner && (
+                      <TableCell>
+                        <Checkbox
+                          sx={{
+                            "&.MuiCheckbox-root": { p: 0 },
+                          }}
+                          color="primary"
+                          onClick={() => handleClick(index)}
+                          checked={isItemSelected}
+                          inputProps={{
+                            "aria-labelledby": labelId,
+                          }}
+                        />
+                      </TableCell>
+                    )}
                     <TableCell align="left">
                       <Typography sx={{ fontSize: "20px", fontWeight: "700" }}>
                         {index}

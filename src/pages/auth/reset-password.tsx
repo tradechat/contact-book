@@ -118,7 +118,7 @@ const ResetPassword = () => {
               textTransform: "capitalize",
               marginTop: "35px",
               marginBottom: "57px",
-              fontWeight: "300",
+              fontWeight: "400",
               background: "#4E73DF",
             }}
             variant="contained"

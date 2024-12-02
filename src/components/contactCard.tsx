@@ -144,7 +144,7 @@ const ConatactCard = ({
         <Box sx={{ textAlign: "center" }}>
           <Typography
             sx={{
-              fontWeight: "300",
+              fontWeight: "400",
               fontSize: "18px",
               color: "#808080",
             }}
@@ -153,7 +153,7 @@ const ConatactCard = ({
           </Typography>
           <Typography
             sx={{
-              fontWeight: "300",
+              fontWeight: "400",
               fontSize: "18px",
               color: "#808080",
             }}

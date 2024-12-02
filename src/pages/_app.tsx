@@ -3,17 +3,20 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { UserProvider } from "@/userContext";
+import { CssBaseline } from "@mui/material";
 
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps, ...appProps }: AppProps) {
   return (
-    <UserProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
+        <CssBaseline />
+
         <Layout page={appProps.router.pathname}>
           <Component {...pageProps} />
         </Layout>
-      </QueryClientProvider>
-    </UserProvider>
+      </UserProvider>
+    </QueryClientProvider>
   );
 }

@@ -27,6 +27,8 @@ import {
 } from "@/services/apiService";
 import { headCells } from "@/models/contact";
 import ProfileImage from "../profileImage";
+import { useUser } from "@/userContext";
+import { UserType } from "@/models/userType";
 
 export default function ContactsTable() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -39,7 +41,8 @@ export default function ContactsTable() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { query } = router;
-
+  const { userType } = useUser();
+  const isOwner = userType === UserType.ADMIN || userType === UserType.OWNER;
   const {
     isLoading,
     error,
@@ -196,42 +199,56 @@ export default function ContactsTable() {
             >
               <TableRow
                 sx={{
+                  "& td:first-of-type, & th:first-of-type": {
+                    pl: "25px",
+                  },
                   "& td, & th": {
                     fontSize: "19px",
-                    padding: "10px",
-                  },
-                  "& th:nth-of-type(8)": {
-                    pl: "40px",
+                    p: "25px",
                   },
                 }}
               >
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    color="primary"
-                    indeterminate={
-                      selected.length > 0 && selected.length < rows!.length
-                    }
-                    checked={
-                      rows!.length > 0 && selected.length === rows!.length
-                    }
-                    onChange={handleSelectAllClick}
-                    inputProps={{
-                      "aria-label": "select all desserts",
-                    }}
-                  />
-                </TableCell>
-                {headCells.map((headCell: HeadCell) => (
-                  <TableCell
-                    key={headCell.id}
-                    align={headCell.align ?? "left"}
-                    padding="normal"
-                  >
-                    {headCell.label}
+                {isOwner && (
+                  <TableCell>
+                    <Checkbox
+                      sx={{
+                        "&.MuiCheckbox-root": { p: 0 },
+                      }}
+                      color="primary"
+                      indeterminate={
+                        selected.length > 0 && selected.length < rows!.length
+                      }
+                      checked={
+                        rows!.length > 0 && selected.length === rows!.length
+                      }
+                      onChange={handleSelectAllClick}
+                      inputProps={{
+                        "aria-label": "select all desserts",
+                      }}
+                    />
                   </TableCell>
-                ))}
+                )}
+                {headCells.map((headCell: HeadCell) => {
+                  if (headCell.id === "isFavorite" && !isOwner) {
+                    return null;
+                  }
+                  return (
+                    <TableCell
+                      key={headCell.id}
+                      align={headCell.align ?? "left"}
+                      padding="normal"
+                    >
+                      {headCell.label}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody
+              sx={{
+                "& td, & th": { borderBottom: "solid 2px #DDE1E6" },
+              }}
+            >
               {visibleRows!.map((row: Contact, index: number) => {
                 const isItemSelected = selected.includes(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
@@ -239,53 +256,56 @@ export default function ContactsTable() {
                   <TableRow
                     key={row.id}
                     sx={{
+                      "& td:first-of-type, & th:first-of-type": {
+                        pl: "25px",
+                      },
                       cursor: "pointer",
-                      "& td, & th": {
+                      "& td": {
                         fontSize: "19px",
-                        padding: "10px",
-                      },
-                      "& td:nth-of-type(8)": {
-                        pl: "40px",
-                      },
-                      "& .MuiTableRow-root.MuiTableRow-hover:hover": {
-                        backgroundColor: "#000!important",
                       },
                     }}
                   >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        onClick={(event) => handleClick(event, row.id)}
-                        checked={isItemSelected}
-                        inputProps={{
-                          "aria-labelledby": labelId,
-                        }}
-                      />
-                    </TableCell>
+                    {isOwner && (
+                      <TableCell>
+                        <Checkbox
+                          sx={{
+                            "&.MuiCheckbox-root": { p: 0 },
+                          }}
+                          color="primary"
+                          onClick={(event) => handleClick(event, row.id)}
+                          checked={isItemSelected}
+                          inputProps={{
+                            "aria-labelledby": labelId,
+                          }}
+                        />
+                      </TableCell>
+                    )}
 
                     <TableCell align="left">
                       <Typography sx={{ fontSize: "20px", fontWeight: "700" }}>
                         {row.id}
                       </Typography>
                     </TableCell>
-                    <TableCell align="center">
-                      <Button
-                        onClick={() => {
-                          favoriteMutation.mutate(row.id);
-                        }}
-                      >
-                        <Image
-                          width="28"
-                          height="28"
-                          src={
-                            row.isFavorite
-                              ? "/images/star-active.png"
-                              : "/images/star.png"
-                          }
-                          alt=""
-                        />
-                      </Button>
-                    </TableCell>
+                    {isOwner && (
+                      <TableCell align="center">
+                        <Button
+                          onClick={() => {
+                            favoriteMutation.mutate(row.id);
+                          }}
+                        >
+                          <Image
+                            width="28"
+                            height="28"
+                            src={
+                              row.isFavorite
+                                ? "/images/star-active.png"
+                                : "/images/star.png"
+                            }
+                            alt=""
+                          />
+                        </Button>
+                      </TableCell>
+                    )}
                     <TableCell align="center">
                       <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <Box

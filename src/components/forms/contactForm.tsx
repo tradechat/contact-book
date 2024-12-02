@@ -279,7 +279,7 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
                           variant="contained"
                           disableElevation
                           sx={{
-                            fontWeight: "300",
+                            fontWeight: "400",
                             marginTop: "10px",
                             fontSize: "18px",
                             textTransform: "capitalize",

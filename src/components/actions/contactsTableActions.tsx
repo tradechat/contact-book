@@ -9,6 +9,8 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import Link from "next/link";
+import { useUser } from "@/userContext";
+import { UserType } from "@/models/userType";
 
 interface ActionsBoxProps {
   isActionSend: boolean;
@@ -35,9 +37,11 @@ const ActionsBox: React.FC<ActionsBoxProps> = ({
   sendEmail,
   deletePendding,
 }) => {
+  const { userType } = useUser();
+  const isOwner = userType === UserType.ADMIN || userType === UserType.OWNER;
   const buttonSize = {
     textTransform: "capitalize",
-    fontWeight: "300",
+    fontWeight: "400",
     fontSize: "16px",
     " &.MuiButtonBase-root": { height: "40px" },
   };
@@ -76,84 +80,90 @@ const ActionsBox: React.FC<ActionsBoxProps> = ({
             rowGap: "12px",
           }}
         >
-          <Button
-            sx={{
-              ...buttonSize,
-              background: "#DC3545",
-              width: { xs: "48%", md: "83px" },
-            }}
-            variant="contained"
-            disableElevation
-            onClick={onDelete}
-          >
-            {deletePendding ? "Loading.." : "Delele"}
-          </Button>
-          <Box sx={{ width: { xs: "48%", md: "120px", lg: "142px" } }}>
+          {isOwner && (
             <Button
-              fullWidth
               sx={{
                 ...buttonSize,
-                background: "#4E73DF",
+                background: "#DC3545",
+                width: { xs: "48%", md: "83px" },
               }}
               variant="contained"
               disableElevation
-              onClick={(event: React.MouseEvent<HTMLElement>) =>
-                handleOpenMenu(event)
-              }
+              onClick={onDelete}
             >
-              Export to
+              {deletePendding ? "Loading.." : "Delele"}
             </Button>
-            <Menu
-              id="demo-positioned-menu"
-              aria-labelledby="demo-positioned-button"
-              anchorEl={anchorEl}
-              open={open}
-              elevation={0}
-              onClose={handleCloseMenu}
+          )}
+          {isOwner && (
+            <Box sx={{ width: { xs: "48%", md: "120px", lg: "142px" } }}>
+              <Button
+                fullWidth
+                sx={{
+                  ...buttonSize,
+                  background: "#4E73DF",
+                }}
+                variant="contained"
+                disableElevation
+                onClick={(event: React.MouseEvent<HTMLElement>) =>
+                  handleOpenMenu(event)
+                }
+              >
+                Export to
+              </Button>
+              <Menu
+                id="demo-positioned-menu"
+                aria-labelledby="demo-positioned-button"
+                anchorEl={anchorEl}
+                open={open}
+                elevation={0}
+                onClose={handleCloseMenu}
+                sx={{
+                  boxShadow: "none",
+                  "& .MuiPaper-root": {
+                    width: "200px",
+                    border: "solid 1px #E0E0E0",
+                  },
+                }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              >
+                <MenuItem onClick={handleCloseMenu}>PDF File</MenuItem>
+                <MenuItem onClick={handleCloseMenu}>
+                  <Link
+                    href="/contacts?action=export"
+                    style={{ textDecoration: "none", color: "#212529" }}
+                  >
+                    Send via Email
+                  </Link>
+                </MenuItem>
+              </Menu>
+            </Box>
+          )}
+          {isOwner && (
+            <Button
               sx={{
-                boxShadow: "none",
-                "& .MuiPaper-root": {
-                  width: "200px",
-                  border: "solid 1px #E0E0E0",
+                ...buttonSize,
+                width: {
+                  xs: "50%",
+                  md: "120px",
+                  lg: "142px",
                 },
+                background: "#4E73DF",
+                display: { xs: "none", md: "block", lg: "block" },
               }}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
+              variant="contained"
+              onClick={sendEmail}
+              disableElevation
             >
-              <MenuItem onClick={handleCloseMenu}>PDF File</MenuItem>
-              <MenuItem onClick={handleCloseMenu}>
-                <Link
-                  href="/contacts?action=export"
-                  style={{ textDecoration: "none", color: "#212529" }}
-                >
-                  Send via Email
-                </Link>
-              </MenuItem>
-            </Menu>
-          </Box>
-          <Button
-            sx={{
-              ...buttonSize,
-              width: {
-                xs: "50%",
-                md: "120px",
-                lg: "142px",
-              },
-              background: "#4E73DF",
-              display: { xs: "none", md: "block", lg: "block" },
-            }}
-            variant="contained"
-            onClick={sendEmail}
-            disableElevation
-          >
-            Send Email
-          </Button>
+              Send Email
+            </Button>
+          )}
 
           <Button
             sx={{

@@ -1,5 +1,12 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { UserType } from "./models/userType";
+import { getCookie } from "cookies-next";
 
 interface UserContextProps {
   userType: UserType;
@@ -11,7 +18,13 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 export const UserProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [userType, setUserType] = useState<UserType>(UserType.ADMIN);
+  const role = getCookie("role");
+  const [userType, setUserType] = useState<UserType>(UserType.USER);
+  useEffect(() => {
+    if (role && Object.values(UserType).includes(role as UserType)) {
+      setUserType(role as UserType);
+    }
+  }, [role]);
 
   return (
     <UserContext.Provider value={{ userType, setUserType }}>

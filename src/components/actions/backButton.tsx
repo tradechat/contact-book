@@ -13,7 +13,7 @@ const BackButtom = ({ handleBack }: BackButtomProps) => {
       sx={{
         textTransform: "capitalize",
         fontSize: "18px",
-        fontWeight: "300",
+        fontWeight: "400",
         borderColor: "#4E73DF",
         color: "#4E73DF",
         px: "61px",

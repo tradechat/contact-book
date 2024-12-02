@@ -80,10 +80,10 @@ const StatisticalBox = ({
                 background: "#fff",
                 opacity: ".5",
                 borderRadius: "50%",
-                margin: "auto",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                ml: "auto",
               }}
             >
               <Icon sx={{ color: color, fontSize: "30px" }}></Icon>

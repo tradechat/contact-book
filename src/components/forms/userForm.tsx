@@ -22,6 +22,8 @@ import FormActionsButton from "../actions/formActionsButton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser, updateUser } from "@/services/apiService";
 import { AxiosError } from "axios";
+import { useUser } from "@/userContext";
+import { UserType } from "@/models/userType";
 
 interface UserFormProps {
   mode: string;
@@ -42,7 +44,8 @@ const UserForm = ({ mode, user }: UserFormProps) => {
   const labelStyle = { fontSize: "18px", fontWeight: "400" };
   const queryClient = useQueryClient();
   const { id } = router.query;
-
+  const { userType } = useUser();
+  const isOwner = userType === UserType.ADMIN || userType === UserType.OWNER;
   const mutation = useMutation<User, AxiosError>({
     mutationFn: () =>
       mode == "add" ? createUser(formData) : updateUser(formData),
@@ -56,15 +59,15 @@ const UserForm = ({ mode, user }: UserFormProps) => {
       }
     },
     onSuccess: async (data) => {
-      console.log(data);
-
       await queryClient.invalidateQueries({
         queryKey: ["user", id],
       });
-      if (mode == "add") {
-        return router.replace("/users");
-      }
-      router.back();
+      return router.replace("/users");
+
+      // if (mode == "add") {
+      //   return router.replace("/users");
+      // }
+      // router.back();
     },
   });
 
@@ -323,9 +326,11 @@ const UserForm = ({ mode, user }: UserFormProps) => {
                   mt: "30px",
                 }}
               >
-                <FormActionsButton
-                  mode={mutation.isPending ? "loading" : mode}
-                />{" "}
+                {isOwner && (
+                  <FormActionsButton
+                    mode={mutation.isPending ? "loading" : mode}
+                  />
+                )}
                 <BackButtom handleBack={handleBack} />
               </Box>
             </Grid>

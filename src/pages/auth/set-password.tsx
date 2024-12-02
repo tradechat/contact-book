@@ -148,7 +148,7 @@ const SetPassword = () => {
               marginBottom: "33px",
               borderRadius: "5px",
               marginTop: "35px",
-              fontWeight: "300",
+              fontWeight: "400",
               background: "#4E73DF",
             }}
             variant="contained"
