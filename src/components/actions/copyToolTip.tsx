@@ -20,7 +20,7 @@ export const LightTooltip = styled(
     backgroundColor: "#ffffff00",
     color: "#000",
     fontSize: 16,
-    height: "4px",
+    height: "17px",
     fontWeight: "400",
   },
 }));

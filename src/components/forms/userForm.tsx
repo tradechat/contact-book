@@ -326,7 +326,7 @@ const UserForm = ({ mode, user }: UserFormProps) => {
                     mode={mutation.isPending ? "loading" : mode}
                   />
                 )}
-                {isOwner && (
+                {isOwner && mode != "add" && (
                   <FormActionsButton
                     mode={mutation.isPending ? "loading" : mode}
                   />

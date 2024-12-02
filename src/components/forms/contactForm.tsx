@@ -480,7 +480,7 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
                           mode={mutation.isPending ? "loading" : mode}
                         />
                       )}
-                      {isOwner && (
+                      {isOwner && mode != "add" && (
                         <FormActionsButton
                           mode={mutation.isPending ? "loading" : mode}
                         />
