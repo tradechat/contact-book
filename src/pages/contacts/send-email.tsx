@@ -1,4 +1,4 @@
-import SendEmailForm from "@/components/forms/send-email";
+import SendEmailForm from "@/components/forms/sendEmail";
 
 const SendEmail = () => {
   return (

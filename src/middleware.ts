@@ -21,6 +21,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/not-authorized", request.url));
   }
 
+  if (role === "User" && request.nextUrl.pathname.includes("/users/add")) {
+    return NextResponse.redirect(new URL("/not-authorized", request.url));
+  }
+
   if (role === "User" && request.nextUrl.pathname.startsWith("/activities")) {
     return NextResponse.redirect(new URL("/not-authorized", request.url));
   }

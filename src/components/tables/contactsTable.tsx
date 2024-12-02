@@ -204,7 +204,7 @@ export default function ContactsTable() {
                   },
                   "& td, & th": {
                     fontSize: "19px",
-                    p: "25px",
+                    py: "25px",
                   },
                 }}
               >
@@ -262,6 +262,7 @@ export default function ContactsTable() {
                       cursor: "pointer",
                       "& td": {
                         fontSize: "19px",
+                        py: "10px",
                       },
                     }}
                   >

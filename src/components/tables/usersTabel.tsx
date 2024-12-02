@@ -230,7 +230,7 @@ export default function UsersTable() {
                   },
                   "& td, & th": {
                     fontSize: "19px",
-                    p: "25px",
+                    py: "25px",
                   },
                 }}
               >
@@ -283,7 +283,7 @@ export default function UsersTable() {
                       cursor: "pointer",
                       "& td, & th": {
                         fontSize: "19px",
-                        p: "23px",
+                        py: "20px",
                       },
                     }}
                   >

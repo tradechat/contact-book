@@ -135,8 +135,8 @@ const SignIn = () => {
               style={{ margin: "auto", marginBottom: "60px", display: "block" }}
               src="/images/Logo_Vertical.svg"
               alt=""
-              width="200"
-              height="300"
+              width="150"
+              height="150"
             />
           </Box>
           <Input

@@ -80,11 +80,11 @@ const DrawerComponent: React.FC<DrawerProps> = ({
 
         <Divider sx={{ borderColor: "#ced4da" }} />
 
-        <Collapse in={userProfileOpen} timeout="auto" unmountOnExit>
+        <Collapse in={userProfileOpen} timeout="auto">
           <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
+            <ListItemButton onClick={handleDrawerToggle} sx={{ pl: 4 }}>
               <Link
-                href={`/users/user?mode=view&id=${userId}`}
+                href={`/users/view/${userId}`}
                 style={{ textDecoration: "none", color: "#000" }}
               >
                 <ListItemText primary="My Profile" />
@@ -92,7 +92,7 @@ const DrawerComponent: React.FC<DrawerProps> = ({
             </ListItemButton>
             <Divider sx={{ borderColor: "#ced4da" }} />
 
-            <ListItemButton sx={{ pl: 4 }}>
+            <ListItemButton onClick={handleDrawerToggle} sx={{ pl: 4 }}>
               <Link
                 href="/auth/signin"
                 style={{ textDecoration: "none", color: "#000" }}

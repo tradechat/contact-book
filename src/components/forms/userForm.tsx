@@ -321,6 +321,11 @@ const UserForm = ({ mode, user }: UserFormProps) => {
                   mt: "30px",
                 }}
               >
+                {mode == "add" && (
+                  <FormActionsButton
+                    mode={mutation.isPending ? "loading" : mode}
+                  />
+                )}
                 {isOwner && (
                   <FormActionsButton
                     mode={mutation.isPending ? "loading" : mode}

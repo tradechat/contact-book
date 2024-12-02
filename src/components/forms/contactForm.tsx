@@ -23,6 +23,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createContact, updateContact } from "@/services/apiService";
 import ProfileImage from "../profileImage";
 import { AxiosError } from "axios";
+import { useUser } from "@/userContext";
+import { UserType } from "@/models/userType";
 
 interface ContactFormProps {
   mode: string;
@@ -42,7 +44,8 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
   const { id } = router.query;
   const labelStyle = { fontSize: "18px", fontWeight: "400" };
   const queryClient = useQueryClient();
-
+  const { userType } = useUser();
+  const isOwner = userType === UserType.OWNER;
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -472,9 +475,16 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
                         justifyContent: "center",
                       }}
                     >
-                      <FormActionsButton
-                        mode={mutation.isPending ? "loading" : mode}
-                      />
+                      {mode == "add" && (
+                        <FormActionsButton
+                          mode={mutation.isPending ? "loading" : mode}
+                        />
+                      )}
+                      {isOwner && (
+                        <FormActionsButton
+                          mode={mutation.isPending ? "loading" : mode}
+                        />
+                      )}
                       <BackButtom handleBack={handleBack} />
                     </Box>
                   </Grid>

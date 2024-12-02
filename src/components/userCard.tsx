@@ -82,7 +82,7 @@ const UserCard = ({
               fontSize: "13px",
             }}
           >
-            #{user.id}
+            #{index + 1}
           </Box>
           <Box
             sx={{
