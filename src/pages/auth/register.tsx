@@ -165,7 +165,6 @@ const Register = () => {
                       : ""
                   }
                   required
-                  aria-required={true}
                   error={isSubmitted && !formData.firstName}
                   onChange={handleChange}
                   value={formData.firstName}

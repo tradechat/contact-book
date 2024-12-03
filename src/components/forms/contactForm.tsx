@@ -25,6 +25,7 @@ import ProfileImage from "../profileImage";
 import { AxiosError } from "axios";
 import { useUser } from "@/userContext";
 import { UserType } from "@/models/userType";
+import { ErrorResponse } from "@/pages/auth/register";
 
 interface ContactFormProps {
   mode: string;
@@ -33,7 +34,7 @@ interface ContactFormProps {
 
 const ContactForm = ({ mode, contact }: ContactFormProps) => {
   const [formData, setFormData] = useState<Contact>(contact);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(mode === "edite");
   const [isChecked, setIsChecked] = useState(
     contact.status == "Active" ? true : false
   );
@@ -81,15 +82,23 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
     });
   };
 
-  const mutation = useMutation<Contact, AxiosError>({
+  const mutation = useMutation<Contact, AxiosError<ErrorResponse>>({
     mutationFn: () =>
       mode == "add" ? createContact(formData) : updateContact(formData),
-    onError: (error: AxiosError) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       if (error.response) {
-        if (error.response && error.response.status === 400) {
+        const { response } = error;
+        if (response.status === 400) {
           const responseData = error.response.data;
           if (typeof responseData === "string") {
             setIsErrorMsg((prevErrors) => [...prevErrors, responseData]);
+          }
+        }
+        if (response.data.errors) {
+          for (const [, messages] of Object.entries(response.data.errors)) {
+            (messages as string[]).forEach((message) => {
+              setIsErrorMsg((prevErrors) => [...prevErrors, message]);
+            });
           }
         }
       }
@@ -115,6 +124,7 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
       formData.firstName &&
       formData.lastName &&
       formData.phoneNumber &&
+      formData.email &&
       formData.address
     ) {
       setopenSnackbars(true);
@@ -357,16 +367,33 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
                   </Grid>
                   <Grid size={{ xs: 12, md: 5.8 }}>
                     <Box>
-                      <Typography sx={{ ...labelStyle }}>Email</Typography>
+                      <Typography sx={{ ...labelStyle }}>
+                        Email{" "}
+                        <Box component="span" sx={{ color: "red" }}>
+                          *
+                        </Box>{" "}
+                      </Typography>
+
                       <Input
                         disabled={mode == "view"}
-                        type="email"
                         name="email"
                         label="name@example.com"
-                        value={formData.email || ""}
                         onChange={handleChange}
+                        value={formData.email}
+                        helperText={
+                          isSubmitted && !formData.email
+                            ? "Please enter email"
+                            : ""
+                        }
+                        error={isSubmitted && !formData.email}
+                        fullWidth
+                        required
                         style={{ marginTop: "13px" }}
-                      ></Input>
+                        onInvalid={(event) => {
+                          event.preventDefault();
+                          setIsSubmitted(true);
+                        }}
+                      />
                     </Box>
                   </Grid>
                   <Grid size={{ xs: 12, md: 5.8 }}>
@@ -381,12 +408,15 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
                         disabled={mode == "view"}
                         type="text"
                         name="phoneNumber"
+                        inputProps={{
+                          maxLength: 12,
+                        }}
                         value={formData.phoneNumber || ""}
                         label="555-123-4567"
                         error={isSubmitted && !formData.phoneNumber}
                         helperText={
                           isSubmitted && !formData.phoneNumber
-                            ? "Please enter a phone number."
+                            ? "Please enter the phone number."
                             : ""
                         }
                         style={{ marginTop: "13px" }}
@@ -444,7 +474,7 @@ const ContactForm = ({ mode, contact }: ContactFormProps) => {
                         error={isSubmitted && !formData.address}
                         helperText={
                           isSubmitted && !formData.address
-                            ? "Please enter a phone number."
+                            ? "Please enter the address."
                             : ""
                         }
                       ></Input>

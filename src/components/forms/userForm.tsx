@@ -24,6 +24,7 @@ import { createUser, updateUser } from "@/services/apiService";
 import { AxiosError } from "axios";
 import { useUser } from "@/userContext";
 import { UserType } from "@/models/userType";
+import { ErrorResponse } from "@/pages/auth/register";
 
 interface UserFormProps {
   mode: string;
@@ -46,15 +47,26 @@ const UserForm = ({ mode, user }: UserFormProps) => {
   const { id } = router.query;
   const { userType } = useUser();
   const isOwner = userType === UserType.ADMIN || userType === UserType.OWNER;
-  const mutation = useMutation<User, AxiosError>({
+  const mutation = useMutation<User, AxiosError<ErrorResponse>>({
     mutationFn: () =>
       mode == "add" ? createUser(formData) : updateUser(formData),
-    onError: (error: AxiosError) => {
-      console.log(error);
-      if (error.response && error.response.status === 400) {
-        const responseData = error.response.data;
-        if (typeof responseData === "string") {
-          setIsErrorMsg((prevErrors) => [...prevErrors, responseData]);
+    onError: (error: AxiosError<ErrorResponse>) => {
+      if (error.response) {
+        const { response } = error;
+        console.log(response);
+
+        if (response.status === 400) {
+          const responseData = error.response.data;
+          if (typeof responseData === "string") {
+            setIsErrorMsg((prevErrors) => [...prevErrors, responseData]);
+          }
+        }
+        if (response.data.errors) {
+          for (const [, messages] of Object.entries(response.data.errors)) {
+            (messages as string[]).forEach((message) => {
+              setIsErrorMsg((prevErrors) => [...prevErrors, message]);
+            });
+          }
         }
       }
     },
@@ -244,19 +256,22 @@ const UserForm = ({ mode, user }: UserFormProps) => {
                 </Typography>
                 <Input
                   disabled={mode == "view"}
-                  type="email"
                   name="email"
                   label="name@example.com"
-                  value={formData.email}
                   onChange={handleChange}
-                  error={isSubmitted && !formData.email}
+                  value={formData.email}
                   helperText={
-                    isSubmitted && !formData.email
-                      ? "Please enter the email."
-                      : ""
+                    isSubmitted && !formData.email ? "Please enter email" : ""
                   }
+                  error={isSubmitted && !formData.email}
+                  fullWidth
+                  required
                   style={{ marginTop: "13px" }}
-                ></Input>
+                  onInvalid={(event) => {
+                    event.preventDefault();
+                    setIsSubmitted(true);
+                  }}
+                />
               </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 3.8 }}>
