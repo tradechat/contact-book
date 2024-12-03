@@ -1,4 +1,4 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Alert, Box, Button, Paper, Snackbar, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useEffect, useState } from "react";
 import EmilaInput from "../actions/emailInput";
@@ -7,9 +7,13 @@ import { useMutation } from "@tanstack/react-query";
 import { sendEmail } from "@/services/apiService";
 import Paths from "../layouts/paths";
 import { EmailData } from "@/models/email";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/pages/auth/register";
 
 const SendEmailForm = () => {
   const router = useRouter();
+  const [isErrorMsg, setIsErrorMsg] = useState<Array<string>>([]);
+  const [openSnackbars, setopenSnackbars] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { email } = router.query;
   const [formData, setFormData] = useState<EmailData>({
@@ -31,10 +35,27 @@ const SendEmailForm = () => {
 
   const mutation = useMutation({
     mutationFn: () => sendEmail(formData),
-    onError: (error) => {
-      console.log(error);
+    onError: (error: AxiosError<ErrorResponse>) => {
+      if (error.response) {
+        const { response } = error;
+        if (response.status === 404) {
+          const responseData = error.response.data;
+          if (typeof responseData === "string") {
+            setIsErrorMsg((prevErrors) => [...prevErrors, responseData]);
+          }
+        }
+        if (response.data.errors) {
+          for (const [, messages] of Object.entries(response.data.errors)) {
+            (messages as string[]).forEach((message) => {
+              setIsErrorMsg((prevErrors) => [...prevErrors, message]);
+            });
+          }
+        }
+      }
     },
-    onSuccess: () => {},
+    onSuccess: () => {
+      return router.back();
+    },
   });
 
   const handleChange = (
@@ -50,9 +71,15 @@ const SendEmailForm = () => {
   const handleSubmit = () => {
     console.log(formData);
     setIsSubmitted(true);
+    setopenSnackbars(true);
+    setIsErrorMsg([]);
     if (formData.to && formData.body && formData.subject) {
       mutation.mutate();
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setopenSnackbars(false);
   };
 
   const buttonSize = {
@@ -74,6 +101,20 @@ const SendEmailForm = () => {
         handleSubmit();
       }}
     >
+      {isErrorMsg.length != 0 &&
+        isErrorMsg.map((error, index) => (
+          <Snackbar
+            key={index}
+            open={openSnackbars}
+            autoHideDuration={4000}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <Alert sx={{ pr: "40px" }} severity="error">
+              {error}
+            </Alert>
+          </Snackbar>
+        ))}
       <Paths></Paths>
       <Box
         sx={{
