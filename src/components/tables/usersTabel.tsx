@@ -304,7 +304,7 @@ export default function UsersTable() {
                     )}
                     <TableCell align="left">
                       <Typography sx={{ fontSize: "20px", fontWeight: "700" }}>
-                        {index}
+                        {index + 1}
                       </Typography>
                     </TableCell>
                     <TableCell align="left">
@@ -379,6 +379,7 @@ export default function UsersTable() {
                 labelId={labelId}
                 key={row.id}
                 index={index}
+                handleViewUser={(id) => handleViewUser(id)}
               />
             );
           })}

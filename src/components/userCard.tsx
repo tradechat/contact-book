@@ -6,8 +6,6 @@ import {
   Checkbox,
   Typography,
 } from "@mui/material";
-import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
-import StarRateRoundedIcon from "@mui/icons-material/StarRateRounded";
 import { User } from "@/models/user";
 
 interface UserCardProps {
@@ -16,6 +14,7 @@ interface UserCardProps {
   labelId: string;
   isItemSelected: boolean;
   index: number;
+  handleViewUser: (id: string) => void;
 }
 
 const UserCard = ({
@@ -24,9 +23,11 @@ const UserCard = ({
   labelId,
   isItemSelected,
   index,
+  handleViewUser,
 }: UserCardProps) => {
   return (
     <Card
+      onClick={() => handleViewUser(user.id!)}
       sx={{ border: "solid 1px #E0E0E0", m: "20px" }}
       elevation={0}
       key={user.id}
@@ -47,17 +48,15 @@ const UserCard = ({
             <Checkbox
               sx={{ position: "relative", zIndex: "999" }}
               color="primary"
-              onClick={() => handleClick(index)}
+              onClick={(event) => {
+                event.stopPropagation();
+                handleClick(index);
+              }}
               checked={isItemSelected}
               inputProps={{
                 "aria-labelledby": labelId,
               }}
             />
-            {user.favorite ? (
-              <StarBorderRoundedIcon />
-            ) : (
-              <StarRateRoundedIcon sx={{ color: "#FC0" }} />
-            )}
           </Box>
         }
       ></CardHeader>

@@ -16,7 +16,8 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
 }) => {
   return (
     <Pagination
-      siblingCount={-1}
+      siblingCount={0}
+      boundaryCount={1}
       count={pageCount}
       page={page}
       color="primary"
@@ -36,11 +37,11 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
               borderRadius: 0,
               border: "solid 1px #DEE2E6",
               margin: 0,
-              fontSize: { xs: "16px", sm: "20px" },
-              padding: { xs: "14px", sm: "19px" },
+              fontSize: { xs: "14px", sm: "20px" },
+              padding: { xs: "8px", sm: "19px" },
               color: "#4E73DF",
-              minWidth: "52px",
-              height: "47px",
+              minWidth: { xs: "40px", sm: "52px" },
+              height: { xs: "35px", sm: "47px" },
               "&.Mui-selected": { color: "#fff" },
             },
 

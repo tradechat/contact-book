@@ -119,7 +119,7 @@ export default function ContactsTable() {
     }
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+  const handleClick = (id: number) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
     if (selectedIndex === -1) {
@@ -273,7 +273,7 @@ export default function ContactsTable() {
                             "&.MuiCheckbox-root": { p: 0 },
                           }}
                           color="primary"
-                          onClick={(event) => handleClick(event, row.id)}
+                          onClick={(event) => handleClick(row.id)}
                           checked={isItemSelected}
                           inputProps={{
                             "aria-labelledby": labelId,
@@ -414,7 +414,7 @@ export default function ContactsTable() {
           </Table>
         </TableContainer>
         <Box sx={{ display: { xs: "block", md: "none" } }}>
-          {rows!.map((row: Contact, index: number) => {
+          {visibleRows!.map((row: Contact, index: number) => {
             const isItemSelected = selected.includes(row.id);
             const labelId = `enhanced-table-checkbox-${index}`;
             return (
@@ -424,6 +424,12 @@ export default function ContactsTable() {
                 handleClick={handleClick}
                 labelId={labelId}
                 key={row.id}
+                handleViewContact={(id) => {
+                  handleViewContact(id);
+                }}
+                handleFavouriteClick={(id) => {
+                  favoriteMutation.mutate(id);
+                }}
               />
             );
           })}

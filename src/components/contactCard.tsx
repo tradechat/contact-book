@@ -1,24 +1,23 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
   Checkbox,
   Typography,
 } from "@mui/material";
-import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
-import StarRateRoundedIcon from "@mui/icons-material/StarRateRounded";
+
 import { Contact } from "@/models/contact";
 import Image from "next/image";
 
 interface ContactCardProps {
   contact: Contact;
-  handleClick: (
-    event: React.MouseEvent<HTMLButtonElement>,
-    contactId: number
-  ) => void;
+  handleClick: (contactId: number) => void;
   labelId: string;
   isItemSelected: boolean;
+  handleFavouriteClick: (id: number) => void;
+  handleViewContact: (id: number) => void;
 }
 
 const ConatactCard = ({
@@ -26,9 +25,12 @@ const ConatactCard = ({
   handleClick,
   labelId,
   isItemSelected,
+  handleFavouriteClick,
+  handleViewContact,
 }: ContactCardProps) => {
   return (
     <Card
+      onClick={() => handleViewContact(contact.id)}
       sx={{ border: "solid 1px #E0E0E0", m: "20px" }}
       elevation={0}
       key={contact.id}
@@ -49,17 +51,32 @@ const ConatactCard = ({
             <Checkbox
               sx={{ position: "relative", zIndex: "999" }}
               color="primary"
-              onClick={(event) => handleClick(event, contact.id)}
+              onClick={(event) => {
+                event.stopPropagation();
+                handleClick(contact.id);
+              }}
               checked={isItemSelected}
               inputProps={{
                 "aria-labelledby": labelId,
               }}
             />
-            {contact.isFavorite ? (
-              <StarBorderRoundedIcon />
-            ) : (
-              <StarRateRoundedIcon sx={{ color: "#FC0" }} />
-            )}
+            <Button
+              onClick={(event) => {
+                event.stopPropagation();
+                handleFavouriteClick(contact.id);
+              }}
+            >
+              <Image
+                width="28"
+                height="28"
+                src={
+                  contact.isFavorite
+                    ? "/images/star-active.png"
+                    : "/images/star.png"
+                }
+                alt=""
+              />
+            </Button>
           </Box>
         }
       ></CardHeader>
@@ -81,7 +98,7 @@ const ConatactCard = ({
               p: "4px",
               border: "solid 1px #E0E0E0",
               bgcolor: "#F7F7F7",
-              width: "42px",
+              minWidth: "45px",
               textAlign: "center",
               borderRadius: "5px",
               color: "#787878",

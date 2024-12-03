@@ -9,36 +9,32 @@ interface PathProps {
 const Paths = ({ name }: PathProps) => {
   const router = useRouter();
   const { asPath, query } = router;
-
-  // دالة للتحقق مما إذا كان الجزء يمثل معرفًا
   const isIdentifier = (segment: string) => {
-    // استبعاد إذا كان UUID أو معرفًا طويلًا جدًا
     return (
-      segment.length > 20 || // استبعاد النصوص الطويلة (مثل UUIDs)
-      /^[a-fA-F0-9-]{8,36}$/.test(segment) || // التحقق من UUIDs
-      /^[0-9]+$/.test(segment) // التحقق من الأرقام فقط
+      segment.length > 20 ||
+      /^[a-fA-F0-9-]{8,36}$/.test(segment) ||
+      /^[0-9]+$/.test(segment)
     );
   };
+
+  console.log(asPath);
 
   const pathArray = asPath
     .split("?")[0]
     .split("/")
-    .filter((segment) => segment && !isIdentifier(segment)); // تجاهل المعرفات
+    .filter((segment) => segment && !isIdentifier(segment));
 
   const generatePathLabel = (segment: string) => {
     if (segment === "contacts" && query.action === "export") {
       return "Contactes / Export via email";
     }
 
-    if (segment === "contact") {
-      if (query.mode === "add") {
-        return "Create new";
-      }
+    if (segment === "view") {
       return name;
     }
 
-    if (segment === "view") {
-      return name;
+    if (asPath.startsWith("/company") && segment == "edite") {
+      return "Edite";
     }
 
     if (segment === "edite") {

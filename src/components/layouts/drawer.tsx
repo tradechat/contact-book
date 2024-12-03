@@ -61,7 +61,11 @@ const DrawerComponent: React.FC<DrawerProps> = ({
               <ListItemButton sx={{ textAlign: "left" }}>
                 <Link
                   href={item.path}
-                  style={{ textDecoration: "none", color: "#000" }}
+                  style={{
+                    textDecoration: "none",
+                    color: "#000",
+                    width: "100%",
+                  }}
                 >
                   <ListItemText primary={item.name} />
                 </Link>
@@ -85,7 +89,7 @@ const DrawerComponent: React.FC<DrawerProps> = ({
             <ListItemButton onClick={handleDrawerToggle} sx={{ pl: 4 }}>
               <Link
                 href={`/users/view/${userId}`}
-                style={{ textDecoration: "none", color: "#000" }}
+                style={{ textDecoration: "none", color: "#000", width: "100%" }}
               >
                 <ListItemText primary="My Profile" />
               </Link>
@@ -95,7 +99,7 @@ const DrawerComponent: React.FC<DrawerProps> = ({
             <ListItemButton onClick={handleDrawerToggle} sx={{ pl: 4 }}>
               <Link
                 href="/auth/signin"
-                style={{ textDecoration: "none", color: "#000" }}
+                style={{ textDecoration: "none", color: "#000", width: "100%" }}
               >
                 <ListItemText primary="Log Out" />
               </Link>
