@@ -33,6 +33,10 @@ const Paths = ({ name }: PathProps) => {
       return name;
     }
 
+    if (segment === "send-email") {
+      return "Send Email";
+    }
+
     if (asPath.startsWith("/company") && segment == "edite") {
       return "Edite";
     }

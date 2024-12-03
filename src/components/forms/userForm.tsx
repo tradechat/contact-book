@@ -20,7 +20,7 @@ import { LockedSwitch } from "../actions/lockedSwitch";
 import BackButtom from "../actions/backButton";
 import FormActionsButton from "../actions/formActionsButton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createUser, sendEmail, updateUser } from "@/services/apiService";
+import { createUser, updateUser } from "@/services/apiService";
 import { AxiosError } from "axios";
 import { useUser } from "@/userContext";
 import { UserType } from "@/models/userType";

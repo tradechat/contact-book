@@ -273,7 +273,7 @@ export default function ContactsTable() {
                             "&.MuiCheckbox-root": { p: 0 },
                           }}
                           color="primary"
-                          onClick={(event) => handleClick(row.id)}
+                          onClick={() => handleClick(row.id)}
                           checked={isItemSelected}
                           inputProps={{
                             "aria-labelledby": labelId,
