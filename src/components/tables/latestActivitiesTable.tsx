@@ -46,6 +46,7 @@ const LatestActivitiesTable = ({ headShow }: LatestActivitiesTableProps) => {
     queryFn: getActivities,
     refetchOnReconnect: true,
     refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const [page, setPage] = useState(0);

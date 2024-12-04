@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 import { HeadCell, User } from "@/models/user";
 import UserStatusBox from "../actions/userStatusBox";
 import PaginationComponent from "../actions/paginationComponent";
-import UserCard from "../userCard";
+import UserCard from "../layouts/userCard";
 import { LightTooltip } from "../actions/copyToolTip";
 import { headCells } from "@/models/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -34,7 +34,7 @@ export default function UsersTable() {
   const columStyle = { fontSize: "20px", fontWeight: "400" };
   const router = useRouter();
   const queryClient = useQueryClient();
-  const userCount = 6;
+  const rowsPerPage = 6;
   const { query } = router;
   const {
     isLoading,
@@ -45,6 +45,7 @@ export default function UsersTable() {
     queryFn: getUsers,
     refetchOnReconnect: true,
     refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const mutation = useMutation({
@@ -69,7 +70,7 @@ export default function UsersTable() {
       setPage(pageNumber >= 0 ? pageNumber : 0);
     }
     if (rows) {
-      const calculatedPageCount = Math.ceil(rows.length / userCount);
+      const calculatedPageCount = Math.ceil(rows.length / rowsPerPage);
       setPageCount(calculatedPageCount);
     }
     console.log(rows);
@@ -77,6 +78,13 @@ export default function UsersTable() {
 
   const handleCreateNew = () => {
     router.push("/users/add");
+  };
+
+  const buttonSize = {
+    textTransform: "capitalize",
+    fontWeight: "400",
+    fontSize: "16px",
+    " &.MuiButtonBase-root": { height: "40px" },
   };
 
   const handleViewUser = (id: string) => {
@@ -121,15 +129,8 @@ export default function UsersTable() {
           row.phoneNumber.includes(searchTerm)
         );
       })
-      .slice(page * userCount, page * userCount + userCount);
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   }, [rows, page, searchTerm]);
-
-  const buttonSize = {
-    textTransform: "capitalize",
-    fontWeight: "400",
-    fontSize: "16px",
-    " &.MuiButtonBase-root": { height: "40px" },
-  };
 
   if (error) {
     console.log(error);
@@ -270,14 +271,14 @@ export default function UsersTable() {
             >
               {visibleRows.map((row: User, index: number) => {
                 const isItemSelected = selected.includes(
-                  page * userCount + index
+                  page * rowsPerPage + index
                 );
                 const labelId = `enhanced-table-checkbox-${
-                  page * userCount + index
+                  page * rowsPerPage + index
                 }`;
                 return (
                   <TableRow
-                    key={page * userCount + index}
+                    key={page * rowsPerPage + index}
                     sx={{
                       "& td:first-of-type, & th:first-of-type": {
                         pl: "25px",
@@ -296,7 +297,9 @@ export default function UsersTable() {
                             "&.MuiCheckbox-root": { p: 0 },
                           }}
                           color="primary"
-                          onClick={() => handleClick(page * userCount + index)}
+                          onClick={() =>
+                            handleClick(page * rowsPerPage + index)
+                          }
                           checked={isItemSelected}
                           inputProps={{
                             "aria-labelledby": labelId,
@@ -306,7 +309,7 @@ export default function UsersTable() {
                     )}
                     <TableCell align="left">
                       <Typography sx={{ fontSize: "20px", fontWeight: "700" }}>
-                        {page * userCount + index + 1}
+                        {page * rowsPerPage + index + 1}
                       </Typography>
                     </TableCell>
                     <TableCell align="left">
@@ -371,9 +374,11 @@ export default function UsersTable() {
         </TableContainer>
         <Box sx={{ display: { xs: "block", md: "none" } }}>
           {visibleRows.map((row: User, index: number) => {
-            const isItemSelected = selected.includes(page * userCount + index);
+            const isItemSelected = selected.includes(
+              page * rowsPerPage + index
+            );
             const labelId = `enhanced-table-checkbox-${
-              page * userCount + index
+              page * rowsPerPage + index
             }`;
             return (
               <UserCard
@@ -382,7 +387,7 @@ export default function UsersTable() {
                 handleClick={handleClick}
                 labelId={labelId}
                 key={row.id}
-                index={page * userCount}
+                index={page * rowsPerPage}
                 handleViewUser={(id) => handleViewUser(id)}
               />
             );

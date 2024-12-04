@@ -8,7 +8,7 @@ import { RegisterData } from "@/models/registerData";
 
 // Users
 export const getCurrentUser = async () => {
-  const response = await axiosInstance.get(`/Users/current-user`);
+  const response = await axiosInstance.get(`/users/current-user`);
   return response.data;
 };
 

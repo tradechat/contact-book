@@ -21,10 +21,13 @@ import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/services/apiService";
 import { User } from "@/models/user";
 import DrawerComponent from "./drawer";
+import { useUser } from "@/userContext";
+import { UserType } from "@/models/userType";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [userProfileOpen, setOpen] = useState(false);
+  const userType = useUser();
   const router = useRouter();
   const handleUserProfileClick = () => {
     setOpen(!userProfileOpen);
@@ -56,10 +59,23 @@ const Navbar = () => {
     setAnchorEl(null);
   };
 
-  const { data: user } = useQuery<User>({
+  const { isLoading, data: user } = useQuery<User>({
     queryKey: ["user"],
     queryFn: getCurrentUser,
+    refetchOnReconnect: true,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
+
+  if (isLoading) {
+    return;
+  }
+
+  if (user) {
+    if (user.role) {
+      userType.setUserType(user.role as UserType);
+    }
+  }
 
   return (
     <>

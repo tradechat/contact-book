@@ -21,7 +21,7 @@ import FormActionsButton from "../actions/formActionsButton";
 import BackButtom from "../actions/backButton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createContact, updateContact } from "@/services/apiService";
-import ProfileImage from "../profileImage";
+import ProfileImage from "../layouts/profileImage";
 import { AxiosError } from "axios";
 import { useUser } from "@/userContext";
 import { UserType } from "@/models/userType";

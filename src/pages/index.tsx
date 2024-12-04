@@ -1,4 +1,4 @@
-import HomePage from "@/components/home";
+import HomePage from "@/components/layouts/home";
 interface HomeProps {
   userData: {
     name: string;

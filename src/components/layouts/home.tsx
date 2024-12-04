@@ -1,11 +1,11 @@
 import Grid from "@mui/material/Grid2";
-import StatisticalBox from "./actions/statisticalBox";
+import StatisticalBox from "../actions/statisticalBox";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import EmailIcon from "@mui/icons-material/Email";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import LatestActivitiesTable from "./tables/latestActivitiesTable";
-import Paths from "./layouts/paths";
+import LatestActivitiesTable from "../tables/latestActivitiesTable";
+import Paths from "../layouts/paths";
 import { useQuery } from "@tanstack/react-query";
 import { Contact } from "@/models/contact";
 import { getContacts } from "@/services/apiService";

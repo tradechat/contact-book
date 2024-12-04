@@ -17,7 +17,7 @@ import { Button, Typography } from "@mui/material";
 import PaginationComponent from "../actions/paginationComponent";
 import ContactsTableActionsBox from "../actions/contactsTableActions";
 import { LightTooltip } from "../actions/copyToolTip";
-import ConatactCard from "../contactCard";
+import ConatactCard from "../layouts/contactCard";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -42,6 +42,7 @@ export default function ContactsTable() {
   const queryClient = useQueryClient();
   const { query } = router;
   const { userType } = useUser();
+  const rowsPerPage = 6;
   const isOwner = userType === UserType.ADMIN || userType === UserType.OWNER;
   const {
     isLoading,
@@ -52,6 +53,7 @@ export default function ContactsTable() {
     queryFn: getContacts,
     refetchOnReconnect: true,
     refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const mutation = useMutation({
@@ -89,7 +91,6 @@ export default function ContactsTable() {
       setPage(pageNumber >= 0 ? pageNumber : 0);
     }
     if (rows) {
-      const rowsPerPage = 6;
       const calculatedPageCount = Math.ceil(rows.length / rowsPerPage);
       setPageCount(calculatedPageCount);
     }
@@ -157,7 +158,7 @@ export default function ContactsTable() {
           row.phoneNumber.includes(searchTerm)
         );
       })
-      .slice(page * 6, page * 6 + 6);
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   }, [rows, page, searchTerm]);
 
   if (error) {
