@@ -77,7 +77,7 @@ const DrawerComponent: React.FC<DrawerProps> = ({
 
         {userName && (
           <ListItemButton onClick={handleUserProfileClick}>
-            <ListItemText primary="Amir" />
+            <ListItemText primary={userName} />
             <PersonIcon />
           </ListItemButton>
         )}

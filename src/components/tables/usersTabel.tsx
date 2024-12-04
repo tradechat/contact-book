@@ -34,6 +34,7 @@ export default function UsersTable() {
   const columStyle = { fontSize: "20px", fontWeight: "400" };
   const router = useRouter();
   const queryClient = useQueryClient();
+  const userCount = 6;
   const { query } = router;
   const {
     isLoading,
@@ -59,19 +60,16 @@ export default function UsersTable() {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["users"] });
-      setSearchTerm("");
     },
   });
 
   useEffect(() => {
-    setSearchTerm("");
     if (query.page) {
       const pageNumber = parseInt(query.page as string, 10) - 1;
       setPage(pageNumber >= 0 ? pageNumber : 0);
     }
     if (rows) {
-      const rowsPerPage = 6;
-      const calculatedPageCount = Math.ceil(rows.length / rowsPerPage);
+      const calculatedPageCount = Math.ceil(rows.length / userCount);
       setPageCount(calculatedPageCount);
     }
     console.log(rows);
@@ -114,8 +112,6 @@ export default function UsersTable() {
 
   const visibleRows = useMemo(() => {
     if (!rows) return [];
-    console.log(rows);
-
     return rows
       .filter((row) => {
         const fullName = `${row.firstName} ${row.lastName}`.toLowerCase();
@@ -125,7 +121,7 @@ export default function UsersTable() {
           row.phoneNumber.includes(searchTerm)
         );
       })
-      .slice(page * 6, page * 6 + 6);
+      .slice(page * userCount, page * userCount + userCount);
   }, [rows, page, searchTerm]);
 
   const buttonSize = {
@@ -191,7 +187,9 @@ export default function UsersTable() {
                 variant="contained"
                 disableElevation
                 onClick={() => {
-                  mutation.mutate();
+                  if (selected.length !== 0) {
+                    mutation.mutate();
+                  }
                 }}
               >
                 {mutation.isPending ? "Loading..." : "  Delete"}
@@ -271,11 +269,15 @@ export default function UsersTable() {
               }}
             >
               {visibleRows.map((row: User, index: number) => {
-                const isItemSelected = selected.includes(index);
-                const labelId = `enhanced-table-checkbox-${row.id}`;
+                const isItemSelected = selected.includes(
+                  page * userCount + index
+                );
+                const labelId = `enhanced-table-checkbox-${
+                  page * userCount + index
+                }`;
                 return (
                   <TableRow
-                    key={index}
+                    key={page * userCount + index}
                     sx={{
                       "& td:first-of-type, & th:first-of-type": {
                         pl: "25px",
@@ -294,7 +296,7 @@ export default function UsersTable() {
                             "&.MuiCheckbox-root": { p: 0 },
                           }}
                           color="primary"
-                          onClick={() => handleClick(index)}
+                          onClick={() => handleClick(page * userCount + index)}
                           checked={isItemSelected}
                           inputProps={{
                             "aria-labelledby": labelId,
@@ -304,7 +306,7 @@ export default function UsersTable() {
                     )}
                     <TableCell align="left">
                       <Typography sx={{ fontSize: "20px", fontWeight: "700" }}>
-                        {index + 1}
+                        {page * userCount + index + 1}
                       </Typography>
                     </TableCell>
                     <TableCell align="left">
@@ -369,8 +371,10 @@ export default function UsersTable() {
         </TableContainer>
         <Box sx={{ display: { xs: "block", md: "none" } }}>
           {visibleRows.map((row: User, index: number) => {
-            const isItemSelected = selected.includes(index);
-            const labelId = `enhanced-table-checkbox-${index}`;
+            const isItemSelected = selected.includes(page * userCount + index);
+            const labelId = `enhanced-table-checkbox-${
+              page * userCount + index
+            }`;
             return (
               <UserCard
                 user={row}
@@ -378,7 +382,7 @@ export default function UsersTable() {
                 handleClick={handleClick}
                 labelId={labelId}
                 key={row.id}
-                index={index}
+                index={page * userCount}
                 handleViewUser={(id) => handleViewUser(id)}
               />
             );
@@ -388,7 +392,13 @@ export default function UsersTable() {
       <Box
         sx={{ display: "flex", justifyContent: { xs: "center", md: "end" } }}
       >
-        <PaginationComponent pageCount={pageCount} setPage={setPage} />
+        <PaginationComponent
+          pageCount={pageCount}
+          setPage={(value) => {
+            router.push(`/users/?page=${value + 1}`);
+          }}
+          page={page + 1}
+        />
       </Box>
     </Box>
   );

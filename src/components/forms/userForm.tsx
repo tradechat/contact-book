@@ -75,7 +75,7 @@ const UserForm = ({ mode, user }: UserFormProps) => {
         queryKey: ["user", id],
       });
 
-      return router.replace("/users");
+      return router.back();
     },
   });
 
@@ -91,10 +91,8 @@ const UserForm = ({ mode, user }: UserFormProps) => {
 
   const handleSubmit = () => {
     if (mode == "view") {
-      return router.push(`/users/edite/${id}`);
+      return router.replace(`/users/edite/${id}`);
     }
-    console.log(formData);
-
     setIsSubmitted(true);
     setopenSnackbars(true);
     setIsErrorMsg([]);

@@ -137,14 +137,19 @@ const ConatactCard = ({
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
+              position: "relative",
+              width: "58px",
+              height: "58px",
             }}
           >
             <Image
-              width="80"
-              height="80"
-              src="/images/Person.png"
-              alt=""
-            ></Image>
+              src="/images/user.png"
+              alt="profile"
+              className="rounded-full"
+              layout="fill"
+              style={{ borderRadius: "50%" }}
+              objectFit="cover"
+            />
           </Box>
           <Typography sx={{ fontSize: "22px", fontWeight: "700" }}>
             {contact.firstName + contact.lastName}

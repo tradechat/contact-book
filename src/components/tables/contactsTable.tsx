@@ -26,7 +26,7 @@ import {
   getContacts,
 } from "@/services/apiService";
 import { headCells } from "@/models/contact";
-import ProfileImage from "../profileImage";
+// import ProfileImage from "../profileImage";
 import { useUser } from "@/userContext";
 import { UserType } from "@/models/userType";
 
@@ -184,7 +184,9 @@ export default function ContactsTable() {
         }}
         sendEmail={handleSendEmail}
         onDelete={() => {
-          mutation.mutate();
+          if (selected.length !== 0) {
+            mutation.mutate();
+          }
         }}
       />
       <Paper sx={{ width: "100%", mb: 2, mt: "18px" }} variant="outlined">
@@ -307,7 +309,31 @@ export default function ContactsTable() {
                         </Button>
                       </TableCell>
                     )}
+
                     <TableCell align="center">
+                      <Box sx={{ display: "flex", justifyContent: "center" }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            position: "relative",
+                            width: "58px",
+                            height: "58px",
+                          }}
+                        >
+                          <Image
+                            src="/images/user.png"
+                            alt="profile"
+                            className="rounded-full"
+                            layout="fill"
+                            style={{ borderRadius: "50%" }}
+                            objectFit="cover"
+                          />
+                        </Box>
+                      </Box>
+                    </TableCell>
+                    {/* <TableCell align="center">
                       <Box sx={{ display: "flex", justifyContent: "center" }}>
                         <Box
                           sx={{
@@ -333,7 +359,7 @@ export default function ContactsTable() {
                           )}
                         </Box>
                       </Box>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="left">
                       <Typography noWrap sx={{ ...columStyle }}>
                         {row.firstName}
@@ -442,7 +468,6 @@ export default function ContactsTable() {
           pageCount={pageCount}
           setPage={(value) => {
             router.push(`/contacts/?page=${value + 1}`);
-            // setPage(value);
           }}
           page={page + 1}
         />
