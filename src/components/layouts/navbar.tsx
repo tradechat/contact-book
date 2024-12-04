@@ -21,7 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/services/apiService";
 import { User } from "@/models/user";
 import DrawerComponent from "./drawer";
-import { useUser } from "@/userContext";
+// import { useUser } from "@/userContext";
 // import { UserType } from "@/models/userType";
 
 const Navbar = () => {
