@@ -21,13 +21,14 @@ import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/services/apiService";
 import { User } from "@/models/user";
 import DrawerComponent from "./drawer";
-// import { useUser } from "@/userContext";
-// import { UserType } from "@/models/userType";
+import { useUser } from "@/userContext";
+import { UserType } from "@/models/userType";
 
 const Navbar = () => {
+  const { setUserType } = useUser();
+
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [userProfileOpen, setOpen] = useState(false);
-  // const userType = useUser();
   const router = useRouter();
   const handleUserProfileClick = () => {
     setOpen(!userProfileOpen);
@@ -71,11 +72,11 @@ const Navbar = () => {
     return;
   }
 
-  // if (user) {
-  //   if (user.role) {
-  //     userType.setUserType(user.role as UserType);
-  //   }
-  // }
+  if (user) {
+    if (user.role) {
+      setUserType(user.role as UserType);
+    }
+  }
 
   return (
     <>
