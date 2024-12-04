@@ -116,7 +116,7 @@ export default function ContactsTable() {
     if (selected.length != 0) {
       const email =
         rows?.find((item) => item.id === selected[0])?.email || null;
-      router.push(`/contacts/send-email?email=${email}`);
+      router.push(`/contacts/send-email?email=${encodeURIComponent(email!)}`);
     }
   };
 
@@ -180,6 +180,8 @@ export default function ContactsTable() {
         handleOpenMenu={handleOpenMenu}
         handleCloseMenu={handleCloseMenu}
         deletePendding={mutation.isPending}
+        disabledDelete={selected.length == 0}
+        disabledSendEmail={selected.length == 0}
         setSearchTerm={(value) => {
           setSearchTerm(value);
         }}

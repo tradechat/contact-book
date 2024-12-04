@@ -180,6 +180,7 @@ export default function UsersTable() {
           {isOwner && (
             <>
               <Button
+                disabled={selected.length == 0}
                 sx={{
                   ...buttonSize,
                   background: "#DC3545",

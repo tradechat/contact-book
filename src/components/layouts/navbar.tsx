@@ -22,12 +22,12 @@ import { getCurrentUser } from "@/services/apiService";
 import { User } from "@/models/user";
 import DrawerComponent from "./drawer";
 import { useUser } from "@/userContext";
-import { UserType } from "@/models/userType";
+// import { UserType } from "@/models/userType";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [userProfileOpen, setOpen] = useState(false);
-  const userType = useUser();
+  // const userType = useUser();
   const router = useRouter();
   const handleUserProfileClick = () => {
     setOpen(!userProfileOpen);
@@ -71,11 +71,11 @@ const Navbar = () => {
     return;
   }
 
-  if (user) {
-    if (user.role) {
-      userType.setUserType(user.role as UserType);
-    }
-  }
+  // if (user) {
+  //   if (user.role) {
+  //     userType.setUserType(user.role as UserType);
+  //   }
+  // }
 
   return (
     <>

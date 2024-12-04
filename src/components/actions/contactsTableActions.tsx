@@ -23,6 +23,8 @@ interface ActionsBoxProps {
   setSearchTerm: (e: string) => void;
   sendEmail: () => void;
   deletePendding: boolean;
+  disabledDelete: boolean;
+  disabledSendEmail: boolean;
 }
 
 const ActionsBox: React.FC<ActionsBoxProps> = ({
@@ -36,6 +38,8 @@ const ActionsBox: React.FC<ActionsBoxProps> = ({
   setSearchTerm,
   sendEmail,
   deletePendding,
+  disabledDelete,
+  disabledSendEmail,
 }) => {
   const { userType } = useUser();
   const isOwner = userType === UserType.ADMIN || userType === UserType.OWNER;
@@ -45,6 +49,9 @@ const ActionsBox: React.FC<ActionsBoxProps> = ({
     fontSize: "16px",
     " &.MuiButtonBase-root": { height: "40px" },
   };
+
+  console.log(disabledDelete);
+
   return (
     <Box
       sx={{
@@ -82,6 +89,7 @@ const ActionsBox: React.FC<ActionsBoxProps> = ({
         >
           {isOwner && (
             <Button
+              disabled={disabledDelete}
               sx={{
                 ...buttonSize,
                 background: "#DC3545",
@@ -147,6 +155,7 @@ const ActionsBox: React.FC<ActionsBoxProps> = ({
           )}
           {isOwner && (
             <Button
+              disabled={disabledSendEmail}
               sx={{
                 ...buttonSize,
                 width: {

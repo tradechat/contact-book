@@ -29,9 +29,10 @@ const HomePage = () => {
     rows?.filter((contact) => contact.status === "Active").length || 0;
   const inactiveContactsCount =
     rows?.filter((contact) => contact.status === "Inactive").length || 0;
-  const withEmailCount = rows?.filter((contact) => contact.email).length || 0;
+  const withEmailCount =
+    rows?.filter((contact) => contact.emailTwo).length || 0;
   const withoutEmailCount =
-    rows?.filter((contact) => !contact.email).length || 0;
+    rows?.filter((contact) => !contact.emailTwo).length || 0;
 
   if (error) {
     console.log(error);

@@ -47,6 +47,9 @@ const UserForm = ({ mode, user }: UserFormProps) => {
   const { id } = router.query;
   const { userType } = useUser();
   const isOwner = userType === UserType.ADMIN || userType === UserType.OWNER;
+  const isRegularUser =
+    userType === UserType.ADMIN || userType === UserType.USER;
+
   const mutation = useMutation<User, AxiosError<ErrorResponse>>({
     mutationFn: () =>
       mode == "add" ? createUser(formData) : updateUser(formData),
@@ -319,7 +322,9 @@ const UserForm = ({ mode, user }: UserFormProps) => {
                       handleChange(e as React.ChangeEvent<HTMLInputElement>);
                     }}
                   >
-                    <MenuItem value={"Owner"}>Owner</MenuItem>
+                    {!isRegularUser && (
+                      <MenuItem value={"Owner"}>Owner</MenuItem>
+                    )}
                     <MenuItem value={"Admin"}>Admin</MenuItem>
                     <MenuItem value={"User"}>User</MenuItem>
                   </Select>
