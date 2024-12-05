@@ -56,11 +56,19 @@ export const register = async (data: RegisterData) => {
   return axiosInstance.post(`/register`, data);
 };
 
-export const resetPassword = async (data: { email: string }) => {
+export const forgotPassword = async (data: { email: string }) => {
   return axiosInstance.post(`/forgot-password`, data);
 };
 
 export const setPassword = async (
+  data: { password: string },
+  id: string,
+  code: string
+) => {
+  return axiosInstance.post(`/set-password?id=${id}&code=${code}`, data);
+};
+
+export const reSetPassword = async (
   data: { password: string },
   id: string,
   code: string

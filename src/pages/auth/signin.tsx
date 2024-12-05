@@ -190,7 +190,7 @@ const SignIn = () => {
               }}
             />
             <Link
-              href="/auth/reset-password"
+              href="/auth/forgot-password"
               style={{
                 color: "#212529",
                 fontSize: "15px",

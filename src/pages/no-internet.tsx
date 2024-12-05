@@ -15,10 +15,12 @@ const NoInternet = () => {
       window.removeEventListener("offline", updateOnlineStatus);
     };
   }, []);
-  if (isOnline) {
-    Router.push("/");
-    return null;
-  }
+
+  useEffect(() => {
+    if (isOnline) {
+      Router.push("/");
+    }
+  }, [isOnline]);
 
   return (
     <Box
