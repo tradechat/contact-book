@@ -15,10 +15,10 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  if (!navigator.onLine) {
-    Router.push("/no-internet");
-    return Promise.reject("No internet connection");
-  }
+  // if (!navigator.onLine) {
+  //   Router.push("/no-internet");
+  //   return Promise.reject("No internet connection");
+  // }
 
   const token = getCookie("token");
 
